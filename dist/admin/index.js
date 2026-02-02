@@ -1,18 +1,19 @@
 'use client';
-import { ChevronRight, Check, Circle, X, LogOut, LayoutDashboard, FileText, FolderTree, UsersRound, Languages, Sun, Moon, Plus, Wand2, Loader2, Bold, Italic, Strikethrough, Heading2, List, ListOrdered, Quote, Code, Link as Link$1, Undo2, Redo2 } from 'lucide-react';
+import { ChevronRight, Check, Circle, X, LogOut, LayoutDashboard, FileText, FolderTree, UsersRound, Languages, Sun, Moon, Plus, Wand2, Filter, Loader2, Bold, Italic, Strikethrough, Heading2, List, ListOrdered, Quote, Code, Link as Link$1, Undo2, Redo2, BookOpen } from 'lucide-react';
 import * as React from 'react';
 import { createContext, useMemo, useEffect, useState, useCallback, useContext } from 'react';
 import { useForm, useController } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { jsx, jsxs } from 'react/jsx-runtime';
-import { Slot } from '@radix-ui/react-slot';
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { cva } from 'class-variance-authority';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import * as LabelPrimitive from '@radix-ui/react-label';
-import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { Tabs as Tabs$1 } from '@base-ui/react/tabs';
+import * as SheetPrimitive from '@radix-ui/react-dialog';
+import { Dialog as Dialog$1 } from '@base-ui/react/dialog';
 import * as SwitchPrimitives from '@radix-ui/react-switch';
 import * as ToastPrimitives from '@radix-ui/react-toast';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -44,7 +45,7 @@ function styleInject(css, { insertAt } = {}) {
 }
 
 // src/admin/styles/generated.css
-styleInject('*,\n::before,\n::after {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x: ;\n  --tw-pan-y: ;\n  --tw-pinch-zoom: ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position: ;\n  --tw-gradient-via-position: ;\n  --tw-gradient-to-position: ;\n  --tw-ordinal: ;\n  --tw-slashed-zero: ;\n  --tw-numeric-figure: ;\n  --tw-numeric-spacing: ;\n  --tw-numeric-fraction: ;\n  --tw-ring-inset: ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur: ;\n  --tw-brightness: ;\n  --tw-contrast: ;\n  --tw-grayscale: ;\n  --tw-hue-rotate: ;\n  --tw-invert: ;\n  --tw-saturate: ;\n  --tw-sepia: ;\n  --tw-drop-shadow: ;\n  --tw-backdrop-blur: ;\n  --tw-backdrop-brightness: ;\n  --tw-backdrop-contrast: ;\n  --tw-backdrop-grayscale: ;\n  --tw-backdrop-hue-rotate: ;\n  --tw-backdrop-invert: ;\n  --tw-backdrop-opacity: ;\n  --tw-backdrop-saturate: ;\n  --tw-backdrop-sepia: ;\n  --tw-contain-size: ;\n  --tw-contain-layout: ;\n  --tw-contain-paint: ;\n  --tw-contain-style: ;\n}\n::backdrop {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x: ;\n  --tw-pan-y: ;\n  --tw-pinch-zoom: ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position: ;\n  --tw-gradient-via-position: ;\n  --tw-gradient-to-position: ;\n  --tw-ordinal: ;\n  --tw-slashed-zero: ;\n  --tw-numeric-figure: ;\n  --tw-numeric-spacing: ;\n  --tw-numeric-fraction: ;\n  --tw-ring-inset: ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur: ;\n  --tw-brightness: ;\n  --tw-contrast: ;\n  --tw-grayscale: ;\n  --tw-hue-rotate: ;\n  --tw-invert: ;\n  --tw-saturate: ;\n  --tw-sepia: ;\n  --tw-drop-shadow: ;\n  --tw-backdrop-blur: ;\n  --tw-backdrop-brightness: ;\n  --tw-backdrop-contrast: ;\n  --tw-backdrop-grayscale: ;\n  --tw-backdrop-hue-rotate: ;\n  --tw-backdrop-invert: ;\n  --tw-backdrop-opacity: ;\n  --tw-backdrop-saturate: ;\n  --tw-backdrop-sepia: ;\n  --tw-contain-size: ;\n  --tw-contain-layout: ;\n  --tw-contain-paint: ;\n  --tw-contain-style: ;\n}\n*,\n::before,\n::after {\n  box-sizing: border-box;\n  border-width: 0;\n  border-style: solid;\n  border-color: #e5e7eb;\n}\n::before,\n::after {\n  --tw-content: "";\n}\nhtml,\n:host {\n  line-height: 1.5;\n  -webkit-text-size-adjust: 100%;\n  -moz-tab-size: 4;\n  -o-tab-size: 4;\n  tab-size: 4;\n  font-family:\n    ui-sans-serif,\n    system-ui,\n    sans-serif,\n    "Apple Color Emoji",\n    "Segoe UI Emoji",\n    "Segoe UI Symbol",\n    "Noto Color Emoji";\n  font-feature-settings: normal;\n  font-variation-settings: normal;\n  -webkit-tap-highlight-color: transparent;\n}\nbody {\n  margin: 0;\n  line-height: inherit;\n}\nhr {\n  height: 0;\n  color: inherit;\n  border-top-width: 1px;\n}\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n  text-decoration: underline dotted;\n}\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\na {\n  color: inherit;\n  text-decoration: inherit;\n}\nb,\nstrong {\n  font-weight: bolder;\n}\ncode,\nkbd,\nsamp,\npre {\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    "Courier New",\n    monospace;\n  font-feature-settings: normal;\n  font-variation-settings: normal;\n  font-size: 1em;\n}\nsmall {\n  font-size: 80%;\n}\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\nsub {\n  bottom: -0.25em;\n}\nsup {\n  top: -0.5em;\n}\ntable {\n  text-indent: 0;\n  border-color: inherit;\n  border-collapse: collapse;\n}\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit;\n  font-feature-settings: inherit;\n  font-variation-settings: inherit;\n  font-size: 100%;\n  font-weight: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  color: inherit;\n  margin: 0;\n  padding: 0;\n}\nbutton,\nselect {\n  text-transform: none;\n}\nbutton,\ninput:where([type=button]),\ninput:where([type=reset]),\ninput:where([type=submit]) {\n  -webkit-appearance: button;\n  background-color: transparent;\n  background-image: none;\n}\n:-moz-focusring {\n  outline: auto;\n}\n:-moz-ui-invalid {\n  box-shadow: none;\n}\nprogress {\n  vertical-align: baseline;\n}\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n[type=search] {\n  -webkit-appearance: textfield;\n  outline-offset: -2px;\n}\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  font: inherit;\n}\nsummary {\n  display: list-item;\n}\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\nfieldset {\n  margin: 0;\n  padding: 0;\n}\nlegend {\n  padding: 0;\n}\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\ndialog {\n  padding: 0;\n}\ntextarea {\n  resize: vertical;\n}\ninput::-moz-placeholder,\ntextarea::-moz-placeholder {\n  opacity: 1;\n  color: #9ca3af;\n}\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1;\n  color: #9ca3af;\n}\nbutton,\n[role=button] {\n  cursor: pointer;\n}\n:disabled {\n  cursor: default;\n}\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block;\n  vertical-align: middle;\n}\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n[hidden]:where(:not([hidden=until-found])) {\n  display: none;\n}\n:root {\n  --background: 0 0% 100%;\n  --foreground: 222.2 84% 4.9%;\n  --muted: 210 20% 96%;\n  --muted-foreground: 215.4 16.3% 46.9%;\n  --popover: 0 0% 100%;\n  --popover-foreground: 222.2 84% 4.9%;\n  --border: 214.3 31.8% 91.4%;\n  --input: 214.3 31.8% 91.4%;\n  --card: 0 0% 100%;\n  --card-foreground: 222.2 84% 4.9%;\n  --primary: 221.2 83.2% 53.3%;\n  --primary-foreground: 210 40% 98%;\n  --secondary: 210 40% 96.1%;\n  --secondary-foreground: 222.2 47.4% 11.2%;\n  --accent: 210 40% 96.1%;\n  --accent-foreground: 222.2 47.4% 11.2%;\n  --destructive: 0 72.2% 50.6%;\n  --destructive-foreground: 210 40% 98%;\n  --ring: 221.2 83.2% 53.3%;\n  --radius: 0.75rem;\n}\n.dark {\n  --background: 0 0% 9%;\n  --foreground: 0 0% 96%;\n  --muted: 0 0% 16%;\n  --muted-foreground: 0 0% 70%;\n  --popover: 0 0% 12%;\n  --popover-foreground: 0 0% 96%;\n  --border: 0 0% 25%;\n  --input: 0 0% 25%;\n  --card: 0 0% 16%;\n  --card-foreground: 0 0% 96%;\n  --primary: 0 0% 25%;\n  --primary-foreground: 0 0% 96%;\n  --secondary: 0 0% 16%;\n  --secondary-foreground: 0 0% 96%;\n  --accent: 0 0% 16%;\n  --accent-foreground: 0 0% 96%;\n  --destructive: 0 62% 30%;\n  --destructive-foreground: 0 0% 96%;\n  --ring: 0 0% 25%;\n}\n* {\n  border-color: hsl(var(--border));\n}\nbody {\n  background-color: hsl(var(--background));\n  color: hsl(var(--foreground));\n}\n.dark .bg-card {\n  border-color: hsl(var(--border) / 0.7);\n}\n.sr-only {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border-width: 0;\n}\n.pointer-events-none {\n  pointer-events: none;\n}\n.pointer-events-auto {\n  pointer-events: auto;\n}\n.fixed {\n  position: fixed;\n}\n.absolute {\n  position: absolute;\n}\n.relative {\n  position: relative;\n}\n.left-2 {\n  left: 0.5rem;\n}\n.right-2 {\n  right: 0.5rem;\n}\n.right-4 {\n  right: 1rem;\n}\n.top-2 {\n  top: 0.5rem;\n}\n.top-4 {\n  top: 1rem;\n}\n.z-50 {\n  z-index: 50;\n}\n.z-\\[100\\] {\n  z-index: 100;\n}\n.-mx-1 {\n  margin-left: -0.25rem;\n  margin-right: -0.25rem;\n}\n.my-1 {\n  margin-top: 0.25rem;\n  margin-bottom: 0.25rem;\n}\n.ml-auto {\n  margin-left: auto;\n}\n.mt-4 {\n  margin-top: 1rem;\n}\n.block {\n  display: block;\n}\n.flex {\n  display: flex;\n}\n.inline-flex {\n  display: inline-flex;\n}\n.table {\n  display: table;\n}\n.grid {\n  display: grid;\n}\n.hidden {\n  display: none;\n}\n.h-10 {\n  height: 2.5rem;\n}\n.h-11 {\n  height: 2.75rem;\n}\n.h-12 {\n  height: 3rem;\n}\n.h-16 {\n  height: 4rem;\n}\n.h-2 {\n  height: 0.5rem;\n}\n.h-24 {\n  height: 6rem;\n}\n.h-3\\.5 {\n  height: 0.875rem;\n}\n.h-4 {\n  height: 1rem;\n}\n.h-5 {\n  height: 1.25rem;\n}\n.h-6 {\n  height: 1.5rem;\n}\n.h-8 {\n  height: 2rem;\n}\n.h-9 {\n  height: 2.25rem;\n}\n.h-px {\n  height: 1px;\n}\n.min-h-\\[80px\\] {\n  min-height: 80px;\n}\n.min-h-screen {\n  min-height: 100vh;\n}\n.w-10 {\n  width: 2.5rem;\n}\n.w-11 {\n  width: 2.75rem;\n}\n.w-2 {\n  width: 0.5rem;\n}\n.w-3\\.5 {\n  width: 0.875rem;\n}\n.w-4 {\n  width: 1rem;\n}\n.w-40 {\n  width: 10rem;\n}\n.w-5 {\n  width: 1.25rem;\n}\n.w-6 {\n  width: 1.5rem;\n}\n.w-64 {\n  width: 16rem;\n}\n.w-9 {\n  width: 2.25rem;\n}\n.w-full {\n  width: 100%;\n}\n.min-w-\\[10rem\\] {\n  min-width: 10rem;\n}\n.min-w-\\[120px\\] {\n  min-width: 120px;\n}\n.min-w-\\[8rem\\] {\n  min-width: 8rem;\n}\n.max-w-md {\n  max-width: 28rem;\n}\n.max-w-sm {\n  max-width: 24rem;\n}\n.flex-1 {\n  flex: 1 1 0%;\n}\n.flex-none {\n  flex: none;\n}\n.shrink-0 {\n  flex-shrink: 0;\n}\n.caption-bottom {\n  caption-side: bottom;\n}\n.rotate-0 {\n  --tw-rotate: 0deg;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.rotate-90 {\n  --tw-rotate: 90deg;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.scale-0 {\n  --tw-scale-x: 0;\n  --tw-scale-y: 0;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.scale-100 {\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.animate-spin {\n  animation: spin 1s linear infinite;\n}\n.cursor-default {\n  cursor: default;\n}\n.cursor-pointer {\n  cursor: pointer;\n}\n.select-none {\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  user-select: none;\n}\n.flex-row {\n  flex-direction: row;\n}\n.flex-col {\n  flex-direction: column;\n}\n.flex-wrap {\n  flex-wrap: wrap;\n}\n.items-start {\n  align-items: flex-start;\n}\n.items-end {\n  align-items: flex-end;\n}\n.items-center {\n  align-items: center;\n}\n.justify-start {\n  justify-content: flex-start;\n}\n.justify-end {\n  justify-content: flex-end;\n}\n.justify-center {\n  justify-content: center;\n}\n.justify-between {\n  justify-content: space-between;\n}\n.gap-1 {\n  gap: 0.25rem;\n}\n.gap-2 {\n  gap: 0.5rem;\n}\n.gap-3 {\n  gap: 0.75rem;\n}\n.gap-4 {\n  gap: 1rem;\n}\n.gap-6 {\n  gap: 1.5rem;\n}\n.space-x-2 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-x-reverse: 0;\n  margin-right: calc(0.5rem * var(--tw-space-x-reverse));\n  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));\n}\n.space-y-0 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0px * var(--tw-space-y-reverse));\n}\n.space-y-1 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));\n}\n.space-y-1\\.5 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0.375rem * var(--tw-space-y-reverse));\n}\n.space-y-2 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));\n}\n.space-y-4 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(1rem * var(--tw-space-y-reverse));\n}\n.space-y-6 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));\n}\n.overflow-auto {\n  overflow: auto;\n}\n.overflow-hidden {\n  overflow: hidden;\n}\n.overflow-y-auto {\n  overflow-y: auto;\n}\n.whitespace-nowrap {\n  white-space: nowrap;\n}\n.rounded {\n  border-radius: 0.25rem;\n}\n.rounded-full {\n  border-radius: 9999px;\n}\n.rounded-lg {\n  border-radius: var(--radius);\n}\n.rounded-md {\n  border-radius: calc(var(--radius) - 2px);\n}\n.rounded-sm {\n  border-radius: calc(var(--radius) - 4px);\n}\n.border {\n  border-width: 1px;\n}\n.border-2 {\n  border-width: 2px;\n}\n.border-b {\n  border-bottom-width: 1px;\n}\n.border-r {\n  border-right-width: 1px;\n}\n.border-t {\n  border-top-width: 1px;\n}\n.border-blue-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(191 219 254 / var(--tw-border-opacity, 1));\n}\n.border-border {\n  border-color: hsl(var(--border));\n}\n.border-destructive {\n  border-color: hsl(var(--destructive));\n}\n.border-input {\n  border-color: hsl(var(--input));\n}\n.border-transparent {\n  border-color: transparent;\n}\n.bg-background {\n  background-color: hsl(var(--background));\n}\n.bg-blue-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));\n}\n.bg-card {\n  background-color: hsl(var(--card));\n}\n.bg-card\\/40 {\n  background-color: hsl(var(--card) / 0.4);\n}\n.bg-card\\/60 {\n  background-color: hsl(var(--card) / 0.6);\n}\n.bg-destructive {\n  background-color: hsl(var(--destructive));\n}\n.bg-muted {\n  background-color: hsl(var(--muted));\n}\n.bg-muted\\/20 {\n  background-color: hsl(var(--muted) / 0.2);\n}\n.bg-muted\\/30 {\n  background-color: hsl(var(--muted) / 0.3);\n}\n.bg-muted\\/40 {\n  background-color: hsl(var(--muted) / 0.4);\n}\n.bg-popover {\n  background-color: hsl(var(--popover));\n}\n.bg-primary {\n  background-color: hsl(var(--primary));\n}\n.bg-secondary {\n  background-color: hsl(var(--secondary));\n}\n.fill-current {\n  fill: currentColor;\n}\n.p-0 {\n  padding: 0px;\n}\n.p-1 {\n  padding: 0.25rem;\n}\n.p-2 {\n  padding: 0.5rem;\n}\n.p-4 {\n  padding: 1rem;\n}\n.p-6 {\n  padding: 1.5rem;\n}\n.px-2 {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n}\n.px-2\\.5 {\n  padding-left: 0.625rem;\n  padding-right: 0.625rem;\n}\n.px-3 {\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n}\n.px-4 {\n  padding-left: 1rem;\n  padding-right: 1rem;\n}\n.px-5 {\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n}\n.px-6 {\n  padding-left: 1.5rem;\n  padding-right: 1.5rem;\n}\n.py-0\\.5 {\n  padding-top: 0.125rem;\n  padding-bottom: 0.125rem;\n}\n.py-1 {\n  padding-top: 0.25rem;\n  padding-bottom: 0.25rem;\n}\n.py-1\\.5 {\n  padding-top: 0.375rem;\n  padding-bottom: 0.375rem;\n}\n.py-2 {\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n}\n.py-3 {\n  padding-top: 0.75rem;\n  padding-bottom: 0.75rem;\n}\n.pb-2 {\n  padding-bottom: 0.5rem;\n}\n.pl-8 {\n  padding-left: 2rem;\n}\n.pr-2 {\n  padding-right: 0.5rem;\n}\n.pt-0 {\n  padding-top: 0px;\n}\n.text-left {\n  text-align: left;\n}\n.text-center {\n  text-align: center;\n}\n.align-middle {\n  vertical-align: middle;\n}\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\n.text-3xl {\n  font-size: 1.875rem;\n  line-height: 2.25rem;\n}\n.text-base {\n  font-size: 1rem;\n  line-height: 1.5rem;\n}\n.text-lg {\n  font-size: 1.125rem;\n  line-height: 1.75rem;\n}\n.text-sm {\n  font-size: 0.875rem;\n  line-height: 1.25rem;\n}\n.text-xs {\n  font-size: 0.75rem;\n  line-height: 1rem;\n}\n.font-medium {\n  font-weight: 500;\n}\n.font-semibold {\n  font-weight: 600;\n}\n.uppercase {\n  text-transform: uppercase;\n}\n.italic {\n  font-style: italic;\n}\n.leading-none {\n  line-height: 1;\n}\n.tracking-tight {\n  letter-spacing: -0.025em;\n}\n.tracking-widest {\n  letter-spacing: 0.1em;\n}\n.text-blue-700 {\n  --tw-text-opacity: 1;\n  color: rgb(29 78 216 / var(--tw-text-opacity, 1));\n}\n.text-card-foreground {\n  color: hsl(var(--card-foreground));\n}\n.text-destructive {\n  color: hsl(var(--destructive));\n}\n.text-destructive-foreground {\n  color: hsl(var(--destructive-foreground));\n}\n.text-foreground {\n  color: hsl(var(--foreground));\n}\n.text-foreground\\/60 {\n  color: hsl(var(--foreground) / 0.6);\n}\n.text-muted-foreground {\n  color: hsl(var(--muted-foreground));\n}\n.text-popover-foreground {\n  color: hsl(var(--popover-foreground));\n}\n.text-primary {\n  color: hsl(var(--primary));\n}\n.text-primary-foreground {\n  color: hsl(var(--primary-foreground));\n}\n.text-secondary-foreground {\n  color: hsl(var(--secondary-foreground));\n}\n.underline-offset-4 {\n  text-underline-offset: 4px;\n}\n.opacity-0 {\n  opacity: 0;\n}\n.opacity-70 {\n  opacity: 0.7;\n}\n.shadow {\n  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow, 0 0 #0000),\n    var(--tw-ring-shadow, 0 0 #0000),\n    var(--tw-shadow);\n}\n.shadow-lg {\n  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow, 0 0 #0000),\n    var(--tw-ring-shadow, 0 0 #0000),\n    var(--tw-shadow);\n}\n.shadow-md {\n  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow, 0 0 #0000),\n    var(--tw-ring-shadow, 0 0 #0000),\n    var(--tw-shadow);\n}\n.shadow-sm {\n  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow, 0 0 #0000),\n    var(--tw-ring-shadow, 0 0 #0000),\n    var(--tw-shadow);\n}\n.outline-none {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\n.outline {\n  outline-style: solid;\n}\n.ring-0 {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow),\n    var(--tw-ring-shadow),\n    var(--tw-shadow, 0 0 #0000);\n}\n.ring-offset-background {\n  --tw-ring-offset-color: hsl(var(--background));\n}\n.blur {\n  --tw-blur: blur(8px);\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\n.filter {\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\n.transition-all {\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\n.transition-colors {\n  transition-property:\n    color,\n    background-color,\n    border-color,\n    text-decoration-color,\n    fill,\n    stroke;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\n.transition-opacity {\n  transition-property: opacity;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\n.transition-transform {\n  transition-property: transform;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\n@keyframes enter {\n  from {\n    opacity: var(--tw-enter-opacity, 1);\n    transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));\n  }\n}\n@keyframes exit {\n  to {\n    opacity: var(--tw-exit-opacity, 1);\n    transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));\n  }\n}\n.tiptap {\n  min-height: 240px;\n  outline: none;\n  white-space: pre-wrap;\n}\n.tiptap:focus {\n  outline: none;\n}\n.tiptap p {\n  margin: 0 0 1rem;\n}\n.tiptap p:last-child {\n  margin-bottom: 0;\n}\n.tiptap h2,\n.tiptap h3,\n.tiptap h4 {\n  font-weight: 600;\n  line-height: 1.2;\n  margin: 1.5rem 0 0.75rem;\n}\n.tiptap ul,\n.tiptap ol {\n  margin: 0 0 1rem;\n  padding-left: 1.25rem;\n}\n.tiptap li {\n  margin-bottom: 0.25rem;\n}\n.tiptap blockquote {\n  border-left: 2px solid hsl(var(--border));\n  color: hsl(var(--muted-foreground));\n  font-style: italic;\n  margin: 0 0 1rem;\n  padding-left: 1rem;\n}\n.tiptap pre {\n  background-color: hsl(var(--muted));\n  border-radius: 0.5rem;\n  color: hsl(var(--muted-foreground));\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    "Courier New",\n    monospace;\n  font-size: 0.875rem;\n  margin: 0 0 1rem;\n  overflow-x: auto;\n  padding: 0.75rem 1rem;\n}\n.dark .tiptap pre {\n  background-color: hsl(var(--muted) / 0.4);\n}\n.tiptap code {\n  background-color: hsl(var(--muted) / 0.4);\n  border-radius: 0.375rem;\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    "Courier New",\n    monospace;\n  font-size: 0.875rem;\n  padding: 0.125rem 0.375rem;\n}\n.tiptap pre code {\n  background-color: transparent;\n  padding: 0;\n}\n.tiptap a {\n  color: hsl(var(--primary));\n  text-decoration: underline;\n}\n.tiptap hr {\n  border: none;\n  border-top: 1px solid hsl(var(--border));\n  margin: 2rem 0;\n}\n.tiptap img {\n  border-radius: 0.5rem;\n  height: auto;\n  max-width: 100%;\n}\n.tiptap strong {\n  font-weight: 600;\n}\n.file\\:border-0::file-selector-button {\n  border-width: 0px;\n}\n.file\\:bg-transparent::file-selector-button {\n  background-color: transparent;\n}\n.file\\:text-sm::file-selector-button {\n  font-size: 0.875rem;\n  line-height: 1.25rem;\n}\n.file\\:font-medium::file-selector-button {\n  font-weight: 500;\n}\n.placeholder\\:text-muted-foreground::-moz-placeholder {\n  color: hsl(var(--muted-foreground));\n}\n.placeholder\\:text-muted-foreground::placeholder {\n  color: hsl(var(--muted-foreground));\n}\n.hover\\:bg-accent:hover {\n  background-color: hsl(var(--accent));\n}\n.hover\\:bg-destructive\\/80:hover {\n  background-color: hsl(var(--destructive) / 0.8);\n}\n.hover\\:bg-destructive\\/90:hover {\n  background-color: hsl(var(--destructive) / 0.9);\n}\n.hover\\:bg-muted\\/50:hover {\n  background-color: hsl(var(--muted) / 0.5);\n}\n.hover\\:bg-primary\\/80:hover {\n  background-color: hsl(var(--primary) / 0.8);\n}\n.hover\\:bg-primary\\/90:hover {\n  background-color: hsl(var(--primary) / 0.9);\n}\n.hover\\:bg-secondary\\/80:hover {\n  background-color: hsl(var(--secondary) / 0.8);\n}\n.hover\\:text-accent-foreground:hover {\n  color: hsl(var(--accent-foreground));\n}\n.hover\\:text-foreground:hover {\n  color: hsl(var(--foreground));\n}\n.hover\\:underline:hover {\n  text-decoration-line: underline;\n}\n.focus\\:bg-accent:focus {\n  background-color: hsl(var(--accent));\n}\n.focus\\:text-accent-foreground:focus {\n  color: hsl(var(--accent-foreground));\n}\n.focus\\:opacity-100:focus {\n  opacity: 1;\n}\n.focus\\:outline-none:focus {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\n.focus\\:ring-2:focus {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow),\n    var(--tw-ring-shadow),\n    var(--tw-shadow, 0 0 #0000);\n}\n.focus\\:ring-ring:focus {\n  --tw-ring-color: hsl(var(--ring));\n}\n.focus\\:ring-offset-2:focus {\n  --tw-ring-offset-width: 2px;\n}\n.focus-visible\\:outline-none:focus-visible {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\n.focus-visible\\:ring-2:focus-visible {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow),\n    var(--tw-ring-shadow),\n    var(--tw-shadow, 0 0 #0000);\n}\n.focus-visible\\:ring-ring:focus-visible {\n  --tw-ring-color: hsl(var(--ring));\n}\n.focus-visible\\:ring-offset-2:focus-visible {\n  --tw-ring-offset-width: 2px;\n}\n.focus-visible\\:ring-offset-background:focus-visible {\n  --tw-ring-offset-color: hsl(var(--background));\n}\n.disabled\\:pointer-events-none:disabled {\n  pointer-events: none;\n}\n.disabled\\:cursor-not-allowed:disabled {\n  cursor: not-allowed;\n}\n.disabled\\:opacity-50:disabled {\n  opacity: 0.5;\n}\n.group:hover .group-hover\\:opacity-100 {\n  opacity: 1;\n}\n.group.destructive .group-\\[\\.destructive\\]\\:border-muted\\/40 {\n  border-color: hsl(var(--muted) / 0.4);\n}\n.group.destructive .group-\\[\\.destructive\\]\\:text-destructive-foreground\\/70 {\n  color: hsl(var(--destructive-foreground) / 0.7);\n}\n.group.destructive .group-\\[\\.destructive\\]\\:hover\\:border-destructive\\/30:hover {\n  border-color: hsl(var(--destructive) / 0.3);\n}\n.group.destructive .group-\\[\\.destructive\\]\\:hover\\:bg-destructive:hover {\n  background-color: hsl(var(--destructive));\n}\n.group.destructive .group-\\[\\.destructive\\]\\:hover\\:text-destructive-foreground:hover {\n  color: hsl(var(--destructive-foreground));\n}\n.peer:disabled ~ .peer-disabled\\:cursor-not-allowed {\n  cursor: not-allowed;\n}\n.peer:disabled ~ .peer-disabled\\:opacity-70 {\n  opacity: 0.7;\n}\n.data-\\[disabled\\]\\:pointer-events-none[data-disabled] {\n  pointer-events: none;\n}\n.data-\\[state\\=checked\\]\\:translate-x-5[data-state=checked] {\n  --tw-translate-x: 1.25rem;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.data-\\[state\\=unchecked\\]\\:-translate-x-0[data-state=unchecked] {\n  --tw-translate-x: -0px;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.data-\\[swipe\\=cancel\\]\\:translate-x-0[data-swipe=cancel] {\n  --tw-translate-x: 0px;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.data-\\[swipe\\=end\\]\\:translate-x-\\[var\\(--radix-toast-swipe-end-x\\)\\][data-swipe=end] {\n  --tw-translate-x: var(--radix-toast-swipe-end-x);\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.data-\\[swipe\\=move\\]\\:translate-x-\\[var\\(--radix-toast-swipe-move-x\\)\\][data-swipe=move] {\n  --tw-translate-x: var(--radix-toast-swipe-move-x);\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.data-\\[state\\=active\\]\\:bg-background[data-state=active] {\n  background-color: hsl(var(--background));\n}\n.data-\\[state\\=checked\\]\\:bg-primary[data-state=checked] {\n  background-color: hsl(var(--primary));\n}\n.data-\\[state\\=open\\]\\:bg-accent[data-state=open] {\n  background-color: hsl(var(--accent));\n}\n.data-\\[state\\=selected\\]\\:bg-muted[data-state=selected] {\n  background-color: hsl(var(--muted));\n}\n.data-\\[state\\=unchecked\\]\\:bg-input[data-state=unchecked] {\n  background-color: hsl(var(--input));\n}\n.data-\\[state\\=active\\]\\:text-foreground[data-state=active] {\n  color: hsl(var(--foreground));\n}\n.data-\\[disabled\\]\\:opacity-50[data-disabled] {\n  opacity: 0.5;\n}\n.data-\\[swipe\\=end\\]\\:opacity-0[data-swipe=end] {\n  opacity: 0;\n}\n.data-\\[state\\=active\\]\\:shadow-sm[data-state=active] {\n  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);\n  box-shadow:\n    var(--tw-ring-offset-shadow, 0 0 #0000),\n    var(--tw-ring-shadow, 0 0 #0000),\n    var(--tw-shadow);\n}\n.data-\\[state\\=open\\]\\:animate-in[data-state=open] {\n  animation-name: enter;\n  animation-duration: 150ms;\n  --tw-enter-opacity: initial;\n  --tw-enter-scale: initial;\n  --tw-enter-rotate: initial;\n  --tw-enter-translate-x: initial;\n  --tw-enter-translate-y: initial;\n}\n.data-\\[state\\=closed\\]\\:animate-out[data-state=closed] {\n  animation-name: exit;\n  animation-duration: 150ms;\n  --tw-exit-opacity: initial;\n  --tw-exit-scale: initial;\n  --tw-exit-rotate: initial;\n  --tw-exit-translate-x: initial;\n  --tw-exit-translate-y: initial;\n}\n.data-\\[state\\=closed\\]\\:fade-out[data-state=closed] {\n  --tw-exit-opacity: 0;\n}\n.data-\\[state\\=open\\]\\:fade-in[data-state=open] {\n  --tw-enter-opacity: 0;\n}\n.data-\\[state\\=closed\\]\\:zoom-out-95[data-state=closed] {\n  --tw-exit-scale: .95;\n}\n.data-\\[state\\=open\\]\\:zoom-in-95[data-state=open] {\n  --tw-enter-scale: .95;\n}\n.data-\\[state\\=closed\\]\\:slide-out-to-left[data-state=closed] {\n  --tw-exit-translate-x: -100%;\n}\n.data-\\[state\\=closed\\]\\:slide-out-to-top[data-state=closed] {\n  --tw-exit-translate-y: -100%;\n}\n.data-\\[state\\=open\\]\\:slide-in-from-left[data-state=open] {\n  --tw-enter-translate-x: -100%;\n}\n.data-\\[state\\=open\\]\\:slide-in-from-top-1[data-state=open] {\n  --tw-enter-translate-y: -0.25rem;\n}\n.dark\\:-rotate-90:is(.dark *) {\n  --tw-rotate: -90deg;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.dark\\:rotate-0:is(.dark *) {\n  --tw-rotate: 0deg;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.dark\\:scale-0:is(.dark *) {\n  --tw-scale-x: 0;\n  --tw-scale-y: 0;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.dark\\:scale-100:is(.dark *) {\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));\n}\n.dark\\:border-blue-500\\/30:is(.dark *) {\n  border-color: rgb(59 130 246 / 0.3);\n}\n.dark\\:bg-blue-500\\/10:is(.dark *) {\n  background-color: rgb(59 130 246 / 0.1);\n}\n.dark\\:text-blue-200:is(.dark *) {\n  --tw-text-opacity: 1;\n  color: rgb(191 219 254 / var(--tw-text-opacity, 1));\n}\n@media (min-width: 640px) {\n  .sm\\:inline {\n    display: inline;\n  }\n  .sm\\:flex {\n    display: flex;\n  }\n  .sm\\:grid-cols-\\[200px\\,1fr\\,120px\\] {\n    grid-template-columns: 200px 1fr 120px;\n  }\n  .sm\\:flex-row {\n    flex-direction: row;\n  }\n  .sm\\:items-center {\n    align-items: center;\n  }\n  .sm\\:justify-between {\n    justify-content: space-between;\n  }\n  .sm\\:gap-3 {\n    gap: 0.75rem;\n  }\n  .sm\\:p-0 {\n    padding: 0px;\n  }\n}\n@media (min-width: 768px) {\n  .md\\:col-span-2 {\n    grid-column: span 2 / span 2;\n  }\n  .md\\:grid-cols-2 {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n  .md\\:p-6 {\n    padding: 1.5rem;\n  }\n  .md\\:px-6 {\n    padding-left: 1.5rem;\n    padding-right: 1.5rem;\n  }\n  .md\\:text-xl {\n    font-size: 1.25rem;\n    line-height: 1.75rem;\n  }\n}\n@media (min-width: 1024px) {\n  .lg\\:flex {\n    display: flex;\n  }\n  .lg\\:hidden {\n    display: none;\n  }\n  .lg\\:flex-col {\n    flex-direction: column;\n  }\n  .lg\\:p-8 {\n    padding: 2rem;\n  }\n}\n@media (min-width: 1280px) {\n  .xl\\:grid-cols-4 {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n}\n.\\[\\&\\:has\\(\\[role\\=checkbox\\]\\)\\]\\:pr-0:has([role=checkbox]) {\n  padding-right: 0px;\n}\n.\\[\\&_tr\\:last-child\\]\\:border-0 tr:last-child {\n  border-width: 0px;\n}\n.\\[\\&_tr\\]\\:border-b tr {\n  border-bottom-width: 1px;\n}\n');
+styleInject('/*! tailwindcss v4.1.18 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, base, components, utilities;\n@layer theme {\n  :root,\n  :host {\n    --font-sans:\n      ui-sans-serif,\n      system-ui,\n      sans-serif,\n      "Apple Color Emoji",\n      "Segoe UI Emoji",\n      "Segoe UI Symbol",\n      "Noto Color Emoji";\n    --font-mono:\n      ui-monospace,\n      SFMono-Regular,\n      Menlo,\n      Monaco,\n      Consolas,\n      "Liberation Mono",\n      "Courier New",\n      monospace;\n    --color-blue-50: oklch(97% 0.014 254.604);\n    --color-blue-200: oklch(88.2% 0.059 254.128);\n    --color-blue-500: oklch(62.3% 0.214 259.815);\n    --color-blue-700: oklch(48.8% 0.243 264.376);\n    --color-slate-800: oklch(27.9% 0.041 260.031);\n    --color-slate-900: oklch(20.8% 0.042 265.755);\n    --color-black: #000;\n    --color-white: #fff;\n    --spacing: 0.25rem;\n    --container-sm: 24rem;\n    --container-md: 28rem;\n    --container-lg: 32rem;\n    --text-xs: 0.75rem;\n    --text-xs--line-height: calc(1 / 0.75);\n    --text-sm: 0.875rem;\n    --text-sm--line-height: calc(1.25 / 0.875);\n    --text-base: 1rem;\n    --text-base--line-height: calc(1.5 / 1);\n    --text-lg: 1.125rem;\n    --text-lg--line-height: calc(1.75 / 1.125);\n    --text-xl: 1.25rem;\n    --text-xl--line-height: calc(1.75 / 1.25);\n    --text-2xl: 1.5rem;\n    --text-2xl--line-height: calc(2 / 1.5);\n    --text-3xl: 1.875rem;\n    --text-3xl--line-height: calc(2.25 / 1.875);\n    --font-weight-medium: 500;\n    --font-weight-semibold: 600;\n    --font-weight-bold: 700;\n    --tracking-tight: -0.025em;\n    --tracking-wider: 0.05em;\n    --tracking-widest: 0.1em;\n    --leading-relaxed: 1.625;\n    --radius-sm: 0.375rem;\n    --radius-md: 0.5rem;\n    --radius-lg: 0.75rem;\n    --radius-xl: 1rem;\n    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);\n    --animate-spin: spin 1s linear infinite;\n    --blur-sm: 8px;\n    --default-transition-duration: 150ms;\n    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n    --default-font-family: var(--font-sans);\n    --default-mono-font-family: var(--font-mono);\n    --radius: 0.5rem;\n    --shadow-card-hover: 0 8px 30px -12px rgba(0, 0, 0, 0.15);\n    --animate-scale-in: scale-in 0.2s ease-out;\n  }\n}\n@layer base {\n  *,\n  ::after,\n  ::before,\n  ::backdrop,\n  ::file-selector-button {\n    box-sizing: border-box;\n    margin: 0;\n    padding: 0;\n    border: 0 solid;\n  }\n  html,\n  :host {\n    line-height: 1.5;\n    -webkit-text-size-adjust: 100%;\n    tab-size: 4;\n    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");\n    font-feature-settings: var(--default-font-feature-settings, normal);\n    font-variation-settings: var(--default-font-variation-settings, normal);\n    -webkit-tap-highlight-color: transparent;\n  }\n  hr {\n    height: 0;\n    color: inherit;\n    border-top-width: 1px;\n  }\n  abbr:where([title]) {\n    -webkit-text-decoration: underline dotted;\n    text-decoration: underline dotted;\n  }\n  h1,\n  h2,\n  h3,\n  h4,\n  h5,\n  h6 {\n    font-size: inherit;\n    font-weight: inherit;\n  }\n  a {\n    color: inherit;\n    -webkit-text-decoration: inherit;\n    text-decoration: inherit;\n  }\n  b,\n  strong {\n    font-weight: bolder;\n  }\n  code,\n  kbd,\n  samp,\n  pre {\n    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);\n    font-feature-settings: var(--default-mono-font-feature-settings, normal);\n    font-variation-settings: var(--default-mono-font-variation-settings, normal);\n    font-size: 1em;\n  }\n  small {\n    font-size: 80%;\n  }\n  sub,\n  sup {\n    font-size: 75%;\n    line-height: 0;\n    position: relative;\n    vertical-align: baseline;\n  }\n  sub {\n    bottom: -0.25em;\n  }\n  sup {\n    top: -0.5em;\n  }\n  table {\n    text-indent: 0;\n    border-color: inherit;\n    border-collapse: collapse;\n  }\n  :-moz-focusring {\n    outline: auto;\n  }\n  progress {\n    vertical-align: baseline;\n  }\n  summary {\n    display: list-item;\n  }\n  ol,\n  ul,\n  menu {\n    list-style: none;\n  }\n  img,\n  svg,\n  video,\n  canvas,\n  audio,\n  iframe,\n  embed,\n  object {\n    display: block;\n    vertical-align: middle;\n  }\n  img,\n  video {\n    max-width: 100%;\n    height: auto;\n  }\n  button,\n  input,\n  select,\n  optgroup,\n  textarea,\n  ::file-selector-button {\n    font: inherit;\n    font-feature-settings: inherit;\n    font-variation-settings: inherit;\n    letter-spacing: inherit;\n    color: inherit;\n    border-radius: 0;\n    background-color: transparent;\n    opacity: 1;\n  }\n  :where(select:is([multiple], [size])) optgroup {\n    font-weight: bolder;\n  }\n  :where(select:is([multiple], [size])) optgroup option {\n    padding-inline-start: 20px;\n  }\n  ::file-selector-button {\n    margin-inline-end: 4px;\n  }\n  ::placeholder {\n    opacity: 1;\n  }\n  @supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {\n    ::placeholder {\n      color: currentcolor;\n      @supports (color: color-mix(in lab, red, red)) {\n        color: color-mix(in oklab, currentcolor 50%, transparent);\n      }\n    }\n  }\n  textarea {\n    resize: vertical;\n  }\n  ::-webkit-search-decoration {\n    -webkit-appearance: none;\n  }\n  ::-webkit-date-and-time-value {\n    min-height: 1lh;\n    text-align: inherit;\n  }\n  ::-webkit-datetime-edit {\n    display: inline-flex;\n  }\n  ::-webkit-datetime-edit-fields-wrapper {\n    padding: 0;\n  }\n  ::-webkit-datetime-edit,\n  ::-webkit-datetime-edit-year-field,\n  ::-webkit-datetime-edit-month-field,\n  ::-webkit-datetime-edit-day-field,\n  ::-webkit-datetime-edit-hour-field,\n  ::-webkit-datetime-edit-minute-field,\n  ::-webkit-datetime-edit-second-field,\n  ::-webkit-datetime-edit-millisecond-field,\n  ::-webkit-datetime-edit-meridiem-field {\n    padding-block: 0;\n  }\n  ::-webkit-calendar-picker-indicator {\n    line-height: 1;\n  }\n  :-moz-ui-invalid {\n    box-shadow: none;\n  }\n  button,\n  input:where([type=button], [type=reset], [type=submit]),\n  ::file-selector-button {\n    appearance: button;\n  }\n  ::-webkit-inner-spin-button,\n  ::-webkit-outer-spin-button {\n    height: auto;\n  }\n  [hidden]:where(:not([hidden=until-found])) {\n    display: none !important;\n  }\n}\n@layer utilities {\n  .pointer-events-auto {\n    pointer-events: auto;\n  }\n  .pointer-events-none {\n    pointer-events: none;\n  }\n  .sr-only {\n    position: absolute;\n    width: 1px;\n    height: 1px;\n    padding: 0;\n    margin: -1px;\n    overflow: hidden;\n    clip-path: inset(50%);\n    white-space: nowrap;\n    border-width: 0;\n  }\n  .absolute {\n    position: absolute;\n  }\n  .fixed {\n    position: fixed;\n  }\n  .relative {\n    position: relative;\n  }\n  .inset-0 {\n    inset: calc(var(--spacing) * 0);\n  }\n  .inset-x-0 {\n    inset-inline: calc(var(--spacing) * 0);\n  }\n  .inset-y-0 {\n    inset-block: calc(var(--spacing) * 0);\n  }\n  .top-0 {\n    top: calc(var(--spacing) * 0);\n  }\n  .top-1 {\n    top: calc(var(--spacing) * 1);\n  }\n  .top-1\\/2 {\n    top: calc(1/2 * 100%);\n  }\n  .top-2 {\n    top: calc(var(--spacing) * 2);\n  }\n  .top-4 {\n    top: calc(var(--spacing) * 4);\n  }\n  .right-0 {\n    right: calc(var(--spacing) * 0);\n  }\n  .right-2 {\n    right: calc(var(--spacing) * 2);\n  }\n  .right-4 {\n    right: calc(var(--spacing) * 4);\n  }\n  .bottom-0 {\n    bottom: calc(var(--spacing) * 0);\n  }\n  .bottom-4 {\n    bottom: calc(var(--spacing) * 4);\n  }\n  .left-0 {\n    left: calc(var(--spacing) * 0);\n  }\n  .left-1 {\n    left: calc(var(--spacing) * 1);\n  }\n  .left-1\\/2 {\n    left: calc(1/2 * 100%);\n  }\n  .left-2 {\n    left: calc(var(--spacing) * 2);\n  }\n  .z-10 {\n    z-index: 10;\n  }\n  .z-50 {\n    z-index: 50;\n  }\n  .z-\\[100\\] {\n    z-index: 100;\n  }\n  .container {\n    width: 100%;\n    @media (width >= 40rem) {\n      max-width: 40rem;\n    }\n    @media (width >= 48rem) {\n      max-width: 48rem;\n    }\n    @media (width >= 64rem) {\n      max-width: 64rem;\n    }\n    @media (width >= 80rem) {\n      max-width: 80rem;\n    }\n    @media (width >= 96rem) {\n      max-width: 96rem;\n    }\n  }\n  .-mx-1 {\n    margin-inline: calc(var(--spacing) * -1);\n  }\n  .my-1 {\n    margin-block: calc(var(--spacing) * 1);\n  }\n  .my-auto {\n    margin-block: auto;\n  }\n  .mt-2 {\n    margin-top: calc(var(--spacing) * 2);\n  }\n  .mt-4 {\n    margin-top: calc(var(--spacing) * 4);\n  }\n  .mt-6 {\n    margin-top: calc(var(--spacing) * 6);\n  }\n  .mb-4 {\n    margin-bottom: calc(var(--spacing) * 4);\n  }\n  .mb-8 {\n    margin-bottom: calc(var(--spacing) * 8);\n  }\n  .ml-1 {\n    margin-left: calc(var(--spacing) * 1);\n  }\n  .ml-auto {\n    margin-left: auto;\n  }\n  .block {\n    display: block;\n  }\n  .contents {\n    display: contents;\n  }\n  .flex {\n    display: flex;\n  }\n  .grid {\n    display: grid;\n  }\n  .hidden {\n    display: none;\n  }\n  .inline-flex {\n    display: inline-flex;\n  }\n  .table {\n    display: table;\n  }\n  .aspect-square {\n    aspect-ratio: 1 / 1;\n  }\n  .h-1 {\n    height: calc(var(--spacing) * 1);\n  }\n  .h-1\\.5 {\n    height: calc(var(--spacing) * 1.5);\n  }\n  .h-2 {\n    height: calc(var(--spacing) * 2);\n  }\n  .h-3 {\n    height: calc(var(--spacing) * 3);\n  }\n  .h-3\\.5 {\n    height: calc(var(--spacing) * 3.5);\n  }\n  .h-4 {\n    height: calc(var(--spacing) * 4);\n  }\n  .h-5 {\n    height: calc(var(--spacing) * 5);\n  }\n  .h-6 {\n    height: calc(var(--spacing) * 6);\n  }\n  .h-7 {\n    height: calc(var(--spacing) * 7);\n  }\n  .h-8 {\n    height: calc(var(--spacing) * 8);\n  }\n  .h-9 {\n    height: calc(var(--spacing) * 9);\n  }\n  .h-10 {\n    height: calc(var(--spacing) * 10);\n  }\n  .h-11 {\n    height: calc(var(--spacing) * 11);\n  }\n  .h-12 {\n    height: calc(var(--spacing) * 12);\n  }\n  .h-16 {\n    height: calc(var(--spacing) * 16);\n  }\n  .h-20 {\n    height: calc(var(--spacing) * 20);\n  }\n  .h-24 {\n    height: calc(var(--spacing) * 24);\n  }\n  .h-full {\n    height: 100%;\n  }\n  .h-px {\n    height: 1px;\n  }\n  .min-h-\\[80px\\] {\n    min-height: 80px;\n  }\n  .min-h-screen {\n    min-height: 100vh;\n  }\n  .w-1 {\n    width: calc(var(--spacing) * 1);\n  }\n  .w-1\\.5 {\n    width: calc(var(--spacing) * 1.5);\n  }\n  .w-2 {\n    width: calc(var(--spacing) * 2);\n  }\n  .w-3 {\n    width: calc(var(--spacing) * 3);\n  }\n  .w-3\\.5 {\n    width: calc(var(--spacing) * 3.5);\n  }\n  .w-3\\/4 {\n    width: calc(3/4 * 100%);\n  }\n  .w-4 {\n    width: calc(var(--spacing) * 4);\n  }\n  .w-5 {\n    width: calc(var(--spacing) * 5);\n  }\n  .w-6 {\n    width: calc(var(--spacing) * 6);\n  }\n  .w-7 {\n    width: calc(var(--spacing) * 7);\n  }\n  .w-8 {\n    width: calc(var(--spacing) * 8);\n  }\n  .w-9 {\n    width: calc(var(--spacing) * 9);\n  }\n  .w-10 {\n    width: calc(var(--spacing) * 10);\n  }\n  .w-11 {\n    width: calc(var(--spacing) * 11);\n  }\n  .w-12 {\n    width: calc(var(--spacing) * 12);\n  }\n  .w-40 {\n    width: calc(var(--spacing) * 40);\n  }\n  .w-64 {\n    width: calc(var(--spacing) * 64);\n  }\n  .w-80 {\n    width: calc(var(--spacing) * 80);\n  }\n  .w-full {\n    width: 100%;\n  }\n  .max-w-lg {\n    max-width: var(--container-lg);\n  }\n  .max-w-md {\n    max-width: var(--container-md);\n  }\n  .max-w-sm {\n    max-width: var(--container-sm);\n  }\n  .min-w-\\[8rem\\] {\n    min-width: 8rem;\n  }\n  .min-w-\\[10rem\\] {\n    min-width: 10rem;\n  }\n  .min-w-\\[100px\\] {\n    min-width: 100px;\n  }\n  .flex-1 {\n    flex: 1;\n  }\n  .flex-none {\n    flex: none;\n  }\n  .flex-shrink {\n    flex-shrink: 1;\n  }\n  .shrink-0 {\n    flex-shrink: 0;\n  }\n  .caption-bottom {\n    caption-side: bottom;\n  }\n  .border-collapse {\n    border-collapse: collapse;\n  }\n  .-translate-x-1 {\n    --tw-translate-x: calc(var(--spacing) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .-translate-x-1\\/2 {\n    --tw-translate-x: calc(calc(1/2 * 100%) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .-translate-y-1 {\n    --tw-translate-y: calc(var(--spacing) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .-translate-y-1\\/2 {\n    --tw-translate-y: calc(calc(1/2 * 100%) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .scale-0 {\n    --tw-scale-x: 0%;\n    --tw-scale-y: 0%;\n    --tw-scale-z: 0%;\n    scale: var(--tw-scale-x) var(--tw-scale-y);\n  }\n  .scale-100 {\n    --tw-scale-x: 100%;\n    --tw-scale-y: 100%;\n    --tw-scale-z: 100%;\n    scale: var(--tw-scale-x) var(--tw-scale-y);\n  }\n  .rotate-0 {\n    rotate: 0deg;\n  }\n  .rotate-90 {\n    rotate: 90deg;\n  }\n  .transform {\n    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);\n  }\n  .animate-scale-in {\n    animation: var(--animate-scale-in);\n  }\n  .animate-spin {\n    animation: var(--animate-spin);\n  }\n  .cursor-default {\n    cursor: default;\n  }\n  .cursor-pointer {\n    cursor: pointer;\n  }\n  .resize {\n    resize: both;\n  }\n  .flex-col {\n    flex-direction: column;\n  }\n  .flex-col-reverse {\n    flex-direction: column-reverse;\n  }\n  .flex-row {\n    flex-direction: row;\n  }\n  .flex-wrap {\n    flex-wrap: wrap;\n  }\n  .items-center {\n    align-items: center;\n  }\n  .items-end {\n    align-items: flex-end;\n  }\n  .items-start {\n    align-items: flex-start;\n  }\n  .justify-between {\n    justify-content: space-between;\n  }\n  .justify-center {\n    justify-content: center;\n  }\n  .justify-end {\n    justify-content: flex-end;\n  }\n  .justify-start {\n    justify-content: flex-start;\n  }\n  .gap-1 {\n    gap: calc(var(--spacing) * 1);\n  }\n  .gap-2 {\n    gap: calc(var(--spacing) * 2);\n  }\n  .gap-2\\.5 {\n    gap: calc(var(--spacing) * 2.5);\n  }\n  .gap-3 {\n    gap: calc(var(--spacing) * 3);\n  }\n  .gap-4 {\n    gap: calc(var(--spacing) * 4);\n  }\n  .gap-6 {\n    gap: calc(var(--spacing) * 6);\n  }\n  .space-y-0 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 0) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 0) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-1 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 1) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-1\\.5 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-2 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-4 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-5 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-6 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-y-8 {\n    :where(& > :not(:last-child)) {\n      --tw-space-y-reverse: 0;\n      margin-block-start: calc(calc(var(--spacing) * 8) * var(--tw-space-y-reverse));\n      margin-block-end: calc(calc(var(--spacing) * 8) * calc(1 - var(--tw-space-y-reverse)));\n    }\n  }\n  .space-x-2 {\n    :where(& > :not(:last-child)) {\n      --tw-space-x-reverse: 0;\n      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));\n      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));\n    }\n  }\n  .truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .overflow-auto {\n    overflow: auto;\n  }\n  .overflow-hidden {\n    overflow: hidden;\n  }\n  .overflow-y-auto {\n    overflow-y: auto;\n  }\n  .rounded {\n    border-radius: var(--radius);\n  }\n  .rounded-full {\n    border-radius: calc(infinity * 1px);\n  }\n  .rounded-lg {\n    border-radius: var(--radius-lg);\n  }\n  .rounded-md {\n    border-radius: var(--radius-md);\n  }\n  .rounded-sm {\n    border-radius: var(--radius-sm);\n  }\n  .rounded-xl {\n    border-radius: var(--radius-xl);\n  }\n  .rounded-t-full {\n    border-top-left-radius: calc(infinity * 1px);\n    border-top-right-radius: calc(infinity * 1px);\n  }\n  .rounded-r-full {\n    border-top-right-radius: calc(infinity * 1px);\n    border-bottom-right-radius: calc(infinity * 1px);\n  }\n  .border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .border-2 {\n    border-style: var(--tw-border-style);\n    border-width: 2px;\n  }\n  .border-t {\n    border-top-style: var(--tw-border-style);\n    border-top-width: 1px;\n  }\n  .border-r {\n    border-right-style: var(--tw-border-style);\n    border-right-width: 1px;\n  }\n  .border-b {\n    border-bottom-style: var(--tw-border-style);\n    border-bottom-width: 1px;\n  }\n  .border-l {\n    border-left-style: var(--tw-border-style);\n    border-left-width: 1px;\n  }\n  .border-blue-200 {\n    border-color: var(--color-blue-200);\n  }\n  .border-border {\n    border-color: hsl(var(--border));\n  }\n  .border-destructive {\n    border-color: hsl(var(--destructive));\n  }\n  .border-input {\n    border-color: hsl(var(--input));\n  }\n  .border-primary {\n    border-color: hsl(var(--primary));\n  }\n  .border-sidebar-border {\n    border-color: hsl(var(--sidebar-border));\n  }\n  .border-transparent {\n    border-color: transparent;\n  }\n  .bg-accent-amber {\n    background-color: hsl(var(--accent-amber));\n  }\n  .bg-accent-blue {\n    background-color: hsl(var(--accent-blue));\n  }\n  .bg-accent-green {\n    background-color: hsl(var(--accent-green));\n  }\n  .bg-accent-purple {\n    background-color: hsl(var(--accent-purple));\n  }\n  .bg-background {\n    background-color: hsl(var(--background));\n  }\n  .bg-black {\n    background-color: var(--color-black);\n  }\n  .bg-black\\/50 {\n    background-color: color-mix(in srgb, #000 50%, transparent);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--color-black) 50%, transparent);\n    }\n  }\n  .bg-blue-50 {\n    background-color: var(--color-blue-50);\n  }\n  .bg-card {\n    background-color: hsl(var(--card));\n  }\n  .bg-destructive {\n    background-color: hsl(var(--destructive));\n  }\n  .bg-info {\n    background-color: hsl(var(--info));\n  }\n  .bg-muted {\n    background-color: hsl(var(--muted));\n  }\n  .bg-popover {\n    background-color: hsl(var(--popover));\n  }\n  .bg-primary {\n    background-color: hsl(var(--primary));\n  }\n  .bg-secondary {\n    background-color: hsl(var(--secondary));\n  }\n  .bg-sidebar {\n    background-color: hsl(var(--sidebar));\n  }\n  .bg-success {\n    background-color: hsl(var(--success));\n  }\n  .bg-transparent {\n    background-color: transparent;\n  }\n  .bg-warning {\n    background-color: hsl(var(--warning));\n  }\n  .bg-white {\n    background-color: var(--color-white);\n  }\n  .bg-white\\/20 {\n    background-color: color-mix(in srgb, #fff 20%, transparent);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--color-white) 20%, transparent);\n    }\n  }\n  .bg-gradient-to-br {\n    --tw-gradient-position: to bottom right in oklab;\n    background-image: linear-gradient(var(--tw-gradient-stops));\n  }\n  .bg-gradient-brand {\n    background-image:\n      linear-gradient(\n        135deg,\n        hsl(var(--gradient-start)),\n        hsl(var(--gradient-end)));\n  }\n  .bg-gradient-subtle {\n    background-image:\n      linear-gradient(\n        135deg,\n        hsl(var(--gradient-start) / 0.1),\n        hsl(var(--gradient-end) / 0.1));\n  }\n  .from-slate-900 {\n    --tw-gradient-from: var(--color-slate-900);\n    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));\n  }\n  .via-slate-800 {\n    --tw-gradient-via: var(--color-slate-800);\n    --tw-gradient-via-stops:\n      var(--tw-gradient-position),\n      var(--tw-gradient-from) var(--tw-gradient-from-position),\n      var(--tw-gradient-via) var(--tw-gradient-via-position),\n      var(--tw-gradient-to) var(--tw-gradient-to-position);\n    --tw-gradient-stops: var(--tw-gradient-via-stops);\n  }\n  .to-slate-900 {\n    --tw-gradient-to: var(--color-slate-900);\n    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));\n  }\n  .fill-current {\n    fill: currentcolor;\n  }\n  .p-0 {\n    padding: calc(var(--spacing) * 0);\n  }\n  .p-1 {\n    padding: calc(var(--spacing) * 1);\n  }\n  .p-2 {\n    padding: calc(var(--spacing) * 2);\n  }\n  .p-2\\.5 {\n    padding: calc(var(--spacing) * 2.5);\n  }\n  .p-4 {\n    padding: calc(var(--spacing) * 4);\n  }\n  .p-6 {\n    padding: calc(var(--spacing) * 6);\n  }\n  .p-12 {\n    padding: calc(var(--spacing) * 12);\n  }\n  .px-2 {\n    padding-inline: calc(var(--spacing) * 2);\n  }\n  .px-2\\.5 {\n    padding-inline: calc(var(--spacing) * 2.5);\n  }\n  .px-3 {\n    padding-inline: calc(var(--spacing) * 3);\n  }\n  .px-4 {\n    padding-inline: calc(var(--spacing) * 4);\n  }\n  .px-5 {\n    padding-inline: calc(var(--spacing) * 5);\n  }\n  .px-6 {\n    padding-inline: calc(var(--spacing) * 6);\n  }\n  .py-0 {\n    padding-block: calc(var(--spacing) * 0);\n  }\n  .py-0\\.5 {\n    padding-block: calc(var(--spacing) * 0.5);\n  }\n  .py-1 {\n    padding-block: calc(var(--spacing) * 1);\n  }\n  .py-1\\.5 {\n    padding-block: calc(var(--spacing) * 1.5);\n  }\n  .py-2 {\n    padding-block: calc(var(--spacing) * 2);\n  }\n  .py-2\\.5 {\n    padding-block: calc(var(--spacing) * 2.5);\n  }\n  .py-3 {\n    padding-block: calc(var(--spacing) * 3);\n  }\n  .py-4 {\n    padding-block: calc(var(--spacing) * 4);\n  }\n  .pt-0 {\n    padding-top: calc(var(--spacing) * 0);\n  }\n  .pr-2 {\n    padding-right: calc(var(--spacing) * 2);\n  }\n  .pb-2 {\n    padding-bottom: calc(var(--spacing) * 2);\n  }\n  .pl-8 {\n    padding-left: calc(var(--spacing) * 8);\n  }\n  .text-center {\n    text-align: center;\n  }\n  .text-left {\n    text-align: left;\n  }\n  .align-middle {\n    vertical-align: middle;\n  }\n  .text-2xl {\n    font-size: var(--text-2xl);\n    line-height: var(--tw-leading, var(--text-2xl--line-height));\n  }\n  .text-3xl {\n    font-size: var(--text-3xl);\n    line-height: var(--tw-leading, var(--text-3xl--line-height));\n  }\n  .text-base {\n    font-size: var(--text-base);\n    line-height: var(--tw-leading, var(--text-base--line-height));\n  }\n  .text-lg {\n    font-size: var(--text-lg);\n    line-height: var(--tw-leading, var(--text-lg--line-height));\n  }\n  .text-sm {\n    font-size: var(--text-sm);\n    line-height: var(--tw-leading, var(--text-sm--line-height));\n  }\n  .text-xl {\n    font-size: var(--text-xl);\n    line-height: var(--tw-leading, var(--text-xl--line-height));\n  }\n  .text-xs {\n    font-size: var(--text-xs);\n    line-height: var(--tw-leading, var(--text-xs--line-height));\n  }\n  .text-\\[10px\\] {\n    font-size: 10px;\n  }\n  .leading-none {\n    --tw-leading: 1;\n    line-height: 1;\n  }\n  .leading-relaxed {\n    --tw-leading: var(--leading-relaxed);\n    line-height: var(--leading-relaxed);\n  }\n  .font-bold {\n    --tw-font-weight: var(--font-weight-bold);\n    font-weight: var(--font-weight-bold);\n  }\n  .font-medium {\n    --tw-font-weight: var(--font-weight-medium);\n    font-weight: var(--font-weight-medium);\n  }\n  .font-semibold {\n    --tw-font-weight: var(--font-weight-semibold);\n    font-weight: var(--font-weight-semibold);\n  }\n  .tracking-tight {\n    --tw-tracking: var(--tracking-tight);\n    letter-spacing: var(--tracking-tight);\n  }\n  .tracking-wider {\n    --tw-tracking: var(--tracking-wider);\n    letter-spacing: var(--tracking-wider);\n  }\n  .tracking-widest {\n    --tw-tracking: var(--tracking-widest);\n    letter-spacing: var(--tracking-widest);\n  }\n  .whitespace-nowrap {\n    white-space: nowrap;\n  }\n  .text-blue-700 {\n    color: var(--color-blue-700);\n  }\n  .text-card-foreground {\n    color: hsl(var(--card-foreground));\n  }\n  .text-current {\n    color: currentcolor;\n  }\n  .text-destructive {\n    color: hsl(var(--destructive));\n  }\n  .text-destructive-foreground {\n    color: hsl(var(--destructive-foreground));\n  }\n  .text-foreground {\n    color: hsl(var(--foreground));\n  }\n  .text-info-foreground {\n    color: hsl(var(--info-foreground));\n  }\n  .text-muted-foreground {\n    color: hsl(var(--muted-foreground));\n  }\n  .text-popover-foreground {\n    color: hsl(var(--popover-foreground));\n  }\n  .text-primary {\n    color: hsl(var(--primary));\n  }\n  .text-primary-foreground {\n    color: hsl(var(--primary-foreground));\n  }\n  .text-secondary-foreground {\n    color: hsl(var(--secondary-foreground));\n  }\n  .text-sidebar-foreground {\n    color: hsl(var(--sidebar-foreground));\n  }\n  .text-success-foreground {\n    color: hsl(var(--success-foreground));\n  }\n  .text-warning-foreground {\n    color: hsl(var(--warning-foreground));\n  }\n  .text-white {\n    color: var(--color-white);\n  }\n  .uppercase {\n    text-transform: uppercase;\n  }\n  .italic {\n    font-style: italic;\n  }\n  .underline {\n    text-decoration-line: underline;\n  }\n  .underline-offset-4 {\n    text-underline-offset: 4px;\n  }\n  .opacity-0 {\n    opacity: 0%;\n  }\n  .opacity-10 {\n    opacity: 10%;\n  }\n  .opacity-60 {\n    opacity: 60%;\n  }\n  .opacity-70 {\n    opacity: 70%;\n  }\n  .opacity-90 {\n    opacity: 90%;\n  }\n  .shadow-lg {\n    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow:\n      var(--tw-inset-shadow),\n      var(--tw-inset-ring-shadow),\n      var(--tw-ring-offset-shadow),\n      var(--tw-ring-shadow),\n      var(--tw-shadow);\n  }\n  .shadow-md {\n    --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow:\n      var(--tw-inset-shadow),\n      var(--tw-inset-ring-shadow),\n      var(--tw-ring-offset-shadow),\n      var(--tw-ring-shadow),\n      var(--tw-shadow);\n  }\n  .shadow-sm {\n    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow:\n      var(--tw-inset-shadow),\n      var(--tw-inset-ring-shadow),\n      var(--tw-ring-offset-shadow),\n      var(--tw-ring-shadow),\n      var(--tw-shadow);\n  }\n  .ring-0 {\n    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);\n    box-shadow:\n      var(--tw-inset-shadow),\n      var(--tw-inset-ring-shadow),\n      var(--tw-ring-offset-shadow),\n      var(--tw-ring-shadow),\n      var(--tw-shadow);\n  }\n  .ring-offset-background {\n    --tw-ring-offset-color: hsl(var(--background));\n  }\n  .outline {\n    outline-style: var(--tw-outline-style);\n    outline-width: 1px;\n  }\n  .blur {\n    --tw-blur: blur(8px);\n    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);\n  }\n  .filter {\n    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);\n  }\n  .backdrop-blur-sm {\n    --tw-backdrop-blur: blur(var(--blur-sm));\n    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);\n    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);\n  }\n  .backdrop-filter {\n    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);\n    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);\n  }\n  .transition {\n    transition-property:\n      color,\n      background-color,\n      border-color,\n      outline-color,\n      text-decoration-color,\n      fill,\n      stroke,\n      --tw-gradient-from,\n      --tw-gradient-via,\n      --tw-gradient-to,\n      opacity,\n      box-shadow,\n      transform,\n      translate,\n      scale,\n      rotate,\n      filter,\n      -webkit-backdrop-filter,\n      backdrop-filter,\n      display,\n      content-visibility,\n      overlay,\n      pointer-events;\n    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--default-transition-duration));\n  }\n  .transition-all {\n    transition-property: all;\n    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--default-transition-duration));\n  }\n  .transition-colors {\n    transition-property:\n      color,\n      background-color,\n      border-color,\n      outline-color,\n      text-decoration-color,\n      fill,\n      stroke,\n      --tw-gradient-from,\n      --tw-gradient-via,\n      --tw-gradient-to;\n    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--default-transition-duration));\n  }\n  .transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--default-transition-duration));\n  }\n  .transition-shadow {\n    transition-property: box-shadow;\n    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--default-transition-duration));\n  }\n  .transition-transform {\n    transition-property:\n      transform,\n      translate,\n      scale,\n      rotate;\n    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--default-transition-duration));\n  }\n  .duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .ease-in-out {\n    --tw-ease: var(--ease-in-out);\n    transition-timing-function: var(--ease-in-out);\n  }\n  .outline-none {\n    --tw-outline-style: none;\n    outline-style: none;\n  }\n  .select-none {\n    -webkit-user-select: none;\n    user-select: none;\n  }\n  .group-hover\\:opacity-100 {\n    &:is(:where(.group):hover *) {\n      @media (hover: hover) {\n        opacity: 100%;\n      }\n    }\n  }\n  .peer-disabled\\:cursor-not-allowed {\n    &:is(:where(.peer):disabled ~ *) {\n      cursor: not-allowed;\n    }\n  }\n  .peer-disabled\\:opacity-70 {\n    &:is(:where(.peer):disabled ~ *) {\n      opacity: 70%;\n    }\n  }\n  .file\\:border-0 {\n    &::file-selector-button {\n      border-style: var(--tw-border-style);\n      border-width: 0px;\n    }\n  }\n  .file\\:bg-transparent {\n    &::file-selector-button {\n      background-color: transparent;\n    }\n  }\n  .file\\:text-sm {\n    &::file-selector-button {\n      font-size: var(--text-sm);\n      line-height: var(--tw-leading, var(--text-sm--line-height));\n    }\n  }\n  .file\\:font-medium {\n    &::file-selector-button {\n      --tw-font-weight: var(--font-weight-medium);\n      font-weight: var(--font-weight-medium);\n    }\n  }\n  .placeholder\\:text-muted-foreground {\n    &::placeholder {\n      color: hsl(var(--muted-foreground));\n    }\n  }\n  .checked\\:border-primary {\n    &:checked {\n      border-color: hsl(var(--primary));\n    }\n  }\n  .checked\\:bg-primary {\n    &:checked {\n      background-color: hsl(var(--primary));\n    }\n  }\n  .hover\\:bg-accent {\n    &:hover {\n      @media (hover: hover) {\n        background-color: hsl(var(--accent));\n      }\n    }\n  }\n  .hover\\:bg-muted {\n    &:hover {\n      @media (hover: hover) {\n        background-color: hsl(var(--muted));\n      }\n    }\n  }\n  .hover\\:text-accent-foreground {\n    &:hover {\n      @media (hover: hover) {\n        color: hsl(var(--accent-foreground));\n      }\n    }\n  }\n  .hover\\:text-destructive {\n    &:hover {\n      @media (hover: hover) {\n        color: hsl(var(--destructive));\n      }\n    }\n  }\n  .hover\\:text-foreground {\n    &:hover {\n      @media (hover: hover) {\n        color: hsl(var(--foreground));\n      }\n    }\n  }\n  .hover\\:underline {\n    &:hover {\n      @media (hover: hover) {\n        text-decoration-line: underline;\n      }\n    }\n  }\n  .hover\\:opacity-100 {\n    &:hover {\n      @media (hover: hover) {\n        opacity: 100%;\n      }\n    }\n  }\n  .hover\\:shadow-md {\n    &:hover {\n      @media (hover: hover) {\n        --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n        box-shadow:\n          var(--tw-inset-shadow),\n          var(--tw-inset-ring-shadow),\n          var(--tw-ring-offset-shadow),\n          var(--tw-ring-shadow),\n          var(--tw-shadow);\n      }\n    }\n  }\n  .group-\\[\\.destructive\\]\\:hover\\:bg-destructive {\n    &:is(:where(.group):is(.destructive) *) {\n      &:hover {\n        @media (hover: hover) {\n          background-color: hsl(var(--destructive));\n        }\n      }\n    }\n  }\n  .group-\\[\\.destructive\\]\\:hover\\:text-destructive-foreground {\n    &:is(:where(.group):is(.destructive) *) {\n      &:hover {\n        @media (hover: hover) {\n          color: hsl(var(--destructive-foreground));\n        }\n      }\n    }\n  }\n  .focus\\:bg-accent {\n    &:focus {\n      background-color: hsl(var(--accent));\n    }\n  }\n  .focus\\:text-accent-foreground {\n    &:focus {\n      color: hsl(var(--accent-foreground));\n    }\n  }\n  .focus\\:opacity-100 {\n    &:focus {\n      opacity: 100%;\n    }\n  }\n  .focus\\:ring-2 {\n    &:focus {\n      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);\n      box-shadow:\n        var(--tw-inset-shadow),\n        var(--tw-inset-ring-shadow),\n        var(--tw-ring-offset-shadow),\n        var(--tw-ring-shadow),\n        var(--tw-shadow);\n    }\n  }\n  .focus\\:ring-ring {\n    &:focus {\n      --tw-ring-color: hsl(var(--ring));\n    }\n  }\n  .focus\\:ring-offset-2 {\n    &:focus {\n      --tw-ring-offset-width: 2px;\n      --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n    }\n  }\n  .focus\\:outline-none {\n    &:focus {\n      --tw-outline-style: none;\n      outline-style: none;\n    }\n  }\n  .focus-visible\\:border-primary {\n    &:focus-visible {\n      border-color: hsl(var(--primary));\n    }\n  }\n  .focus-visible\\:ring-2 {\n    &:focus-visible {\n      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);\n      box-shadow:\n        var(--tw-inset-shadow),\n        var(--tw-inset-ring-shadow),\n        var(--tw-ring-offset-shadow),\n        var(--tw-ring-shadow),\n        var(--tw-shadow);\n    }\n  }\n  .focus-visible\\:ring-ring {\n    &:focus-visible {\n      --tw-ring-color: hsl(var(--ring));\n    }\n  }\n  .focus-visible\\:ring-offset-0 {\n    &:focus-visible {\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n    }\n  }\n  .focus-visible\\:ring-offset-2 {\n    &:focus-visible {\n      --tw-ring-offset-width: 2px;\n      --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n    }\n  }\n  .focus-visible\\:ring-offset-background {\n    &:focus-visible {\n      --tw-ring-offset-color: hsl(var(--background));\n    }\n  }\n  .focus-visible\\:outline-none {\n    &:focus-visible {\n      --tw-outline-style: none;\n      outline-style: none;\n    }\n  }\n  .active\\:scale-\\[0\\.98\\] {\n    &:active {\n      scale: 0.98;\n    }\n  }\n  .disabled\\:pointer-events-none {\n    &:disabled {\n      pointer-events: none;\n    }\n  }\n  .disabled\\:cursor-not-allowed {\n    &:disabled {\n      cursor: not-allowed;\n    }\n  }\n  .disabled\\:opacity-50 {\n    &:disabled {\n      opacity: 50%;\n    }\n  }\n  .data-\\[checked\\]\\:border-primary {\n    &[data-checked] {\n      border-color: hsl(var(--primary));\n    }\n  }\n  .data-\\[checked\\]\\:bg-primary {\n    &[data-checked] {\n      background-color: hsl(var(--primary));\n    }\n  }\n  .data-\\[checked\\]\\:text-primary-foreground {\n    &[data-checked] {\n      color: hsl(var(--primary-foreground));\n    }\n  }\n  .data-\\[disabled\\]\\:pointer-events-none {\n    &[data-disabled] {\n      pointer-events: none;\n    }\n  }\n  .data-\\[disabled\\]\\:opacity-50 {\n    &[data-disabled] {\n      opacity: 50%;\n    }\n  }\n  .data-\\[ending-style\\]\\:scale-95 {\n    &[data-ending-style] {\n      --tw-scale-x: 95%;\n      --tw-scale-y: 95%;\n      --tw-scale-z: 95%;\n      scale: var(--tw-scale-x) var(--tw-scale-y);\n    }\n  }\n  .data-\\[ending-style\\]\\:opacity-0 {\n    &[data-ending-style] {\n      opacity: 0%;\n    }\n  }\n  .data-\\[selected\\]\\:bg-background {\n    &[data-selected] {\n      background-color: hsl(var(--background));\n    }\n  }\n  .data-\\[selected\\]\\:text-foreground {\n    &[data-selected] {\n      color: hsl(var(--foreground));\n    }\n  }\n  .data-\\[selected\\]\\:shadow-sm {\n    &[data-selected] {\n      --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n      box-shadow:\n        var(--tw-inset-shadow),\n        var(--tw-inset-ring-shadow),\n        var(--tw-ring-offset-shadow),\n        var(--tw-ring-shadow),\n        var(--tw-shadow);\n    }\n  }\n  .data-\\[starting-style\\]\\:scale-95 {\n    &[data-starting-style] {\n      --tw-scale-x: 95%;\n      --tw-scale-y: 95%;\n      --tw-scale-z: 95%;\n      scale: var(--tw-scale-x) var(--tw-scale-y);\n    }\n  }\n  .data-\\[starting-style\\]\\:opacity-0 {\n    &[data-starting-style] {\n      opacity: 0%;\n    }\n  }\n  .data-\\[state\\=checked\\]\\:translate-x-5 {\n    &[data-state=checked] {\n      --tw-translate-x: calc(var(--spacing) * 5);\n      translate: var(--tw-translate-x) var(--tw-translate-y);\n    }\n  }\n  .data-\\[state\\=checked\\]\\:bg-primary {\n    &[data-state=checked] {\n      background-color: hsl(var(--primary));\n    }\n  }\n  .data-\\[state\\=closed\\]\\:duration-300 {\n    &[data-state=closed] {\n      --tw-duration: 300ms;\n      transition-duration: 300ms;\n    }\n  }\n  .data-\\[state\\=open\\]\\:bg-accent {\n    &[data-state=open] {\n      background-color: hsl(var(--accent));\n    }\n  }\n  .data-\\[state\\=open\\]\\:bg-secondary {\n    &[data-state=open] {\n      background-color: hsl(var(--secondary));\n    }\n  }\n  .data-\\[state\\=open\\]\\:duration-500 {\n    &[data-state=open] {\n      --tw-duration: 500ms;\n      transition-duration: 500ms;\n    }\n  }\n  .data-\\[state\\=selected\\]\\:bg-muted {\n    &[data-state=selected] {\n      background-color: hsl(var(--muted));\n    }\n  }\n  .data-\\[state\\=unchecked\\]\\:-translate-x-0 {\n    &[data-state=unchecked] {\n      --tw-translate-x: calc(var(--spacing) * -0);\n      translate: var(--tw-translate-x) var(--tw-translate-y);\n    }\n  }\n  .data-\\[swipe\\=cancel\\]\\:translate-x-0 {\n    &[data-swipe=cancel] {\n      --tw-translate-x: calc(var(--spacing) * 0);\n      translate: var(--tw-translate-x) var(--tw-translate-y);\n    }\n  }\n  .data-\\[swipe\\=end\\]\\:translate-x-\\[var\\(--radix-toast-swipe-end-x\\)\\] {\n    &[data-swipe=end] {\n      --tw-translate-x: var(--radix-toast-swipe-end-x);\n      translate: var(--tw-translate-x) var(--tw-translate-y);\n    }\n  }\n  .data-\\[swipe\\=end\\]\\:opacity-0 {\n    &[data-swipe=end] {\n      opacity: 0%;\n    }\n  }\n  .data-\\[swipe\\=move\\]\\:translate-x-\\[var\\(--radix-toast-swipe-move-x\\)\\] {\n    &[data-swipe=move] {\n      --tw-translate-x: var(--radix-toast-swipe-move-x);\n      translate: var(--tw-translate-x) var(--tw-translate-y);\n    }\n  }\n  .sm\\:flex {\n    @media (width >= 40rem) {\n      display: flex;\n    }\n  }\n  .sm\\:inline {\n    @media (width >= 40rem) {\n      display: inline;\n    }\n  }\n  .sm\\:max-w-md {\n    @media (width >= 40rem) {\n      max-width: var(--container-md);\n    }\n  }\n  .sm\\:max-w-sm {\n    @media (width >= 40rem) {\n      max-width: var(--container-sm);\n    }\n  }\n  .sm\\:flex-row {\n    @media (width >= 40rem) {\n      flex-direction: row;\n    }\n  }\n  .sm\\:items-center {\n    @media (width >= 40rem) {\n      align-items: center;\n    }\n  }\n  .sm\\:justify-between {\n    @media (width >= 40rem) {\n      justify-content: space-between;\n    }\n  }\n  .sm\\:justify-end {\n    @media (width >= 40rem) {\n      justify-content: flex-end;\n    }\n  }\n  .sm\\:gap-3 {\n    @media (width >= 40rem) {\n      gap: calc(var(--spacing) * 3);\n    }\n  }\n  .sm\\:space-x-2 {\n    @media (width >= 40rem) {\n      :where(& > :not(:last-child)) {\n        --tw-space-x-reverse: 0;\n        margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));\n        margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));\n      }\n    }\n  }\n  .sm\\:p-0 {\n    @media (width >= 40rem) {\n      padding: calc(var(--spacing) * 0);\n    }\n  }\n  .sm\\:p-12 {\n    @media (width >= 40rem) {\n      padding: calc(var(--spacing) * 12);\n    }\n  }\n  .sm\\:text-left {\n    @media (width >= 40rem) {\n      text-align: left;\n    }\n  }\n  .md\\:col-span-2 {\n    @media (width >= 48rem) {\n      grid-column: span 2 / span 2;\n    }\n  }\n  .md\\:grid-cols-2 {\n    @media (width >= 48rem) {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n  }\n  .md\\:p-6 {\n    @media (width >= 48rem) {\n      padding: calc(var(--spacing) * 6);\n    }\n  }\n  .md\\:px-6 {\n    @media (width >= 48rem) {\n      padding-inline: calc(var(--spacing) * 6);\n    }\n  }\n  .md\\:text-xl {\n    @media (width >= 48rem) {\n      font-size: var(--text-xl);\n      line-height: var(--tw-leading, var(--text-xl--line-height));\n    }\n  }\n  .lg\\:flex {\n    @media (width >= 64rem) {\n      display: flex;\n    }\n  }\n  .lg\\:hidden {\n    @media (width >= 64rem) {\n      display: none;\n    }\n  }\n  .lg\\:flex-1 {\n    @media (width >= 64rem) {\n      flex: 1;\n    }\n  }\n  .lg\\:flex-col {\n    @media (width >= 64rem) {\n      flex-direction: column;\n    }\n  }\n  .lg\\:p-8 {\n    @media (width >= 64rem) {\n      padding: calc(var(--spacing) * 8);\n    }\n  }\n  .lg\\:text-left {\n    @media (width >= 64rem) {\n      text-align: left;\n    }\n  }\n  .xl\\:grid-cols-4 {\n    @media (width >= 80rem) {\n      grid-template-columns: repeat(4, minmax(0, 1fr));\n    }\n  }\n  .dark\\:scale-0 {\n    @media (prefers-color-scheme: dark) {\n      --tw-scale-x: 0%;\n      --tw-scale-y: 0%;\n      --tw-scale-z: 0%;\n      scale: var(--tw-scale-x) var(--tw-scale-y);\n    }\n  }\n  .dark\\:scale-100 {\n    @media (prefers-color-scheme: dark) {\n      --tw-scale-x: 100%;\n      --tw-scale-y: 100%;\n      --tw-scale-z: 100%;\n      scale: var(--tw-scale-x) var(--tw-scale-y);\n    }\n  }\n  .dark\\:-rotate-90 {\n    @media (prefers-color-scheme: dark) {\n      rotate: calc(90deg * -1);\n    }\n  }\n  .dark\\:rotate-0 {\n    @media (prefers-color-scheme: dark) {\n      rotate: 0deg;\n    }\n  }\n  .dark\\:border-blue-500\\/30 {\n    @media (prefers-color-scheme: dark) {\n      border-color: color-mix(in srgb, oklch(62.3% 0.214 259.815) 30%, transparent);\n      @supports (color: color-mix(in lab, red, red)) {\n        border-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);\n      }\n    }\n  }\n  .dark\\:bg-blue-500\\/10 {\n    @media (prefers-color-scheme: dark) {\n      background-color: color-mix(in srgb, oklch(62.3% 0.214 259.815) 10%, transparent);\n      @supports (color: color-mix(in lab, red, red)) {\n        background-color: color-mix(in oklab, var(--color-blue-500) 10%, transparent);\n      }\n    }\n  }\n  .dark\\:text-blue-200 {\n    @media (prefers-color-scheme: dark) {\n      color: var(--color-blue-200);\n    }\n  }\n  .\\[\\&_svg\\]\\:pointer-events-none {\n    & svg {\n      pointer-events: none;\n    }\n  }\n  .\\[\\&_svg\\]\\:size-4 {\n    & svg {\n      width: calc(var(--spacing) * 4);\n      height: calc(var(--spacing) * 4);\n    }\n  }\n  .\\[\\&_svg\\]\\:shrink-0 {\n    & svg {\n      flex-shrink: 0;\n    }\n  }\n  .\\[\\&_tr\\]\\:border-b {\n    & tr {\n      border-bottom-style: var(--tw-border-style);\n      border-bottom-width: 1px;\n    }\n  }\n  .\\[\\&_tr\\:last-child\\]\\:border-0 {\n    & tr:last-child {\n      border-style: var(--tw-border-style);\n      border-width: 0px;\n    }\n  }\n  .\\[\\&\\:has\\(\\[role\\=checkbox\\]\\)\\]\\:pr-0 {\n    &:has([role=checkbox]) {\n      padding-right: calc(var(--spacing) * 0);\n    }\n  }\n  .\\[\\&\\>tr\\]\\:last\\:border-b-0 {\n    & > tr {\n      &:last-child {\n        border-bottom-style: var(--tw-border-style);\n        border-bottom-width: 0px;\n      }\n    }\n  }\n}\n:root {\n  --background: 0 0% 100%;\n  --foreground: 222.2 84% 4.9%;\n  --muted: 210 20% 96%;\n  --muted-foreground: 215.4 16.3% 46.9%;\n  --popover: 0 0% 100%;\n  --popover-foreground: 222.2 84% 4.9%;\n  --border: 214.3 31.8% 91.4%;\n  --input: 214.3 31.8% 91.4%;\n  --card: 0 0% 100%;\n  --card-foreground: 222.2 84% 4.9%;\n  --primary: 221.2 83.2% 53.3%;\n  --primary-foreground: 210 40% 98%;\n  --secondary: 210 40% 96.1%;\n  --secondary-foreground: 222.2 47.4% 11.2%;\n  --accent: 210 40% 96.1%;\n  --accent-foreground: 222.2 47.4% 11.2%;\n  --destructive: 0 72.2% 50.6%;\n  --destructive-foreground: 210 40% 98%;\n  --ring: 221.2 83.2% 53.3%;\n  --accent-blue: 217 91% 60%;\n  --accent-blue-foreground: 210 40% 98%;\n  --accent-green: 142 76% 36%;\n  --accent-green-foreground: 210 40% 98%;\n  --accent-amber: 38 92% 50%;\n  --accent-amber-foreground: 26 83% 14%;\n  --accent-purple: 262 83% 58%;\n  --accent-purple-foreground: 210 40% 98%;\n  --success: 142 76% 36%;\n  --success-foreground: 210 40% 98%;\n  --warning: 38 92% 50%;\n  --warning-foreground: 26 83% 14%;\n  --info: 199 89% 48%;\n  --info-foreground: 210 40% 98%;\n  --sidebar: 0 0% 98%;\n  --sidebar-foreground: 222.2 84% 4.9%;\n  --sidebar-border: 214.3 31.8% 91.4%;\n  --sidebar-accent: 221.2 83.2% 53.3%;\n  --gradient-start: 221.2 83.2% 53.3%;\n  --gradient-end: 262 83% 58%;\n}\n.dark {\n  --background: 0 0% 9%;\n  --foreground: 0 0% 96%;\n  --muted: 0 0% 16%;\n  --muted-foreground: 0 0% 70%;\n  --popover: 0 0% 12%;\n  --popover-foreground: 0 0% 96%;\n  --border: 0 0% 25%;\n  --input: 0 0% 25%;\n  --card: 0 0% 12%;\n  --card-foreground: 0 0% 96%;\n  --primary: 221.2 83.2% 53.3%;\n  --primary-foreground: 0 0% 100%;\n  --secondary: 0 0% 16%;\n  --secondary-foreground: 0 0% 96%;\n  --accent: 0 0% 16%;\n  --accent-foreground: 0 0% 96%;\n  --destructive: 0 62% 30%;\n  --destructive-foreground: 0 0% 96%;\n  --ring: 221.2 83.2% 53.3%;\n  --accent-blue: 217 91% 60%;\n  --accent-blue-foreground: 0 0% 100%;\n  --accent-green: 142 71% 45%;\n  --accent-green-foreground: 0 0% 100%;\n  --accent-amber: 38 92% 50%;\n  --accent-amber-foreground: 26 83% 14%;\n  --accent-purple: 262 83% 65%;\n  --accent-purple-foreground: 0 0% 100%;\n  --success: 142 71% 45%;\n  --success-foreground: 0 0% 100%;\n  --warning: 38 92% 50%;\n  --warning-foreground: 26 83% 14%;\n  --info: 199 89% 48%;\n  --info-foreground: 0 0% 100%;\n  --sidebar: 0 0% 7%;\n  --sidebar-foreground: 0 0% 96%;\n  --sidebar-border: 0 0% 20%;\n  --sidebar-accent: 221.2 83.2% 53.3%;\n  --gradient-start: 221.2 83.2% 53.3%;\n  --gradient-end: 262 83% 65%;\n}\n@layer base {\n  * {\n    border-color: hsl(var(--border));\n  }\n  body {\n    background-color: hsl(var(--background));\n    color: hsl(var(--foreground));\n  }\n}\n.tiptap {\n  min-height: 240px;\n  outline: none;\n  white-space: pre-wrap;\n}\n.tiptap:focus {\n  outline: none;\n}\n.tiptap p {\n  margin: 0 0 1rem;\n}\n.tiptap p:last-child {\n  margin-bottom: 0;\n}\n.tiptap h2,\n.tiptap h3,\n.tiptap h4 {\n  font-weight: 600;\n  line-height: 1.2;\n  margin: 1.5rem 0 0.75rem;\n}\n.tiptap ul,\n.tiptap ol {\n  margin: 0 0 1rem;\n  padding-left: 1.25rem;\n}\n.tiptap li {\n  margin-bottom: 0.25rem;\n}\n.tiptap blockquote {\n  border-left: 2px solid hsl(var(--border));\n  color: hsl(var(--muted-foreground));\n  font-style: italic;\n  margin: 0 0 1rem;\n  padding-left: 1rem;\n}\n.tiptap pre {\n  background-color: hsl(var(--muted));\n  border-radius: 0.5rem;\n  color: hsl(var(--muted-foreground));\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    "Courier New",\n    monospace;\n  font-size: 0.875rem;\n  margin: 0 0 1rem;\n  overflow-x: auto;\n  padding: 0.75rem 1rem;\n}\n.dark .tiptap pre {\n  background-color: hsl(var(--muted) / 0.4);\n}\n.tiptap code {\n  background-color: hsl(var(--muted) / 0.4);\n  border-radius: 0.375rem;\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    "Courier New",\n    monospace;\n  font-size: 0.875rem;\n  padding: 0.125rem 0.375rem;\n}\n.tiptap pre code {\n  background-color: transparent;\n  padding: 0;\n}\n.tiptap a {\n  color: hsl(var(--primary));\n  text-decoration: underline;\n}\n.tiptap hr {\n  border: none;\n  border-top: 1px solid hsl(var(--border));\n  margin: 2rem 0;\n}\n.tiptap img {\n  border-radius: 0.5rem;\n  height: auto;\n  max-width: 100%;\n}\n.tiptap strong {\n  font-weight: 600;\n}\n@property --tw-translate-x { syntax: "*"; inherits: false; initial-value: 0; }\n@property --tw-translate-y { syntax: "*"; inherits: false; initial-value: 0; }\n@property --tw-translate-z { syntax: "*"; inherits: false; initial-value: 0; }\n@property --tw-scale-x { syntax: "*"; inherits: false; initial-value: 1; }\n@property --tw-scale-y { syntax: "*"; inherits: false; initial-value: 1; }\n@property --tw-scale-z { syntax: "*"; inherits: false; initial-value: 1; }\n@property --tw-rotate-x { syntax: "*"; inherits: false; }\n@property --tw-rotate-y { syntax: "*"; inherits: false; }\n@property --tw-rotate-z { syntax: "*"; inherits: false; }\n@property --tw-skew-x { syntax: "*"; inherits: false; }\n@property --tw-skew-y { syntax: "*"; inherits: false; }\n@property --tw-space-y-reverse { syntax: "*"; inherits: false; initial-value: 0; }\n@property --tw-space-x-reverse { syntax: "*"; inherits: false; initial-value: 0; }\n@property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid; }\n@property --tw-gradient-position { syntax: "*"; inherits: false; }\n@property --tw-gradient-from { syntax: "<color>"; inherits: false; initial-value: #0000; }\n@property --tw-gradient-via { syntax: "<color>"; inherits: false; initial-value: #0000; }\n@property --tw-gradient-to { syntax: "<color>"; inherits: false; initial-value: #0000; }\n@property --tw-gradient-stops { syntax: "*"; inherits: false; }\n@property --tw-gradient-via-stops { syntax: "*"; inherits: false; }\n@property --tw-gradient-from-position { syntax: "<length-percentage>"; inherits: false; initial-value: 0%; }\n@property --tw-gradient-via-position { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }\n@property --tw-gradient-to-position { syntax: "<length-percentage>"; inherits: false; initial-value: 100%; }\n@property --tw-leading { syntax: "*"; inherits: false; }\n@property --tw-font-weight { syntax: "*"; inherits: false; }\n@property --tw-tracking { syntax: "*"; inherits: false; }\n@property --tw-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }\n@property --tw-shadow-color { syntax: "*"; inherits: false; }\n@property --tw-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }\n@property --tw-inset-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }\n@property --tw-inset-shadow-color { syntax: "*"; inherits: false; }\n@property --tw-inset-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }\n@property --tw-ring-color { syntax: "*"; inherits: false; }\n@property --tw-ring-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }\n@property --tw-inset-ring-color { syntax: "*"; inherits: false; }\n@property --tw-inset-ring-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }\n@property --tw-ring-inset { syntax: "*"; inherits: false; }\n@property --tw-ring-offset-width { syntax: "<length>"; inherits: false; initial-value: 0px; }\n@property --tw-ring-offset-color { syntax: "*"; inherits: false; initial-value: #fff; }\n@property --tw-ring-offset-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }\n@property --tw-outline-style { syntax: "*"; inherits: false; initial-value: solid; }\n@property --tw-blur { syntax: "*"; inherits: false; }\n@property --tw-brightness { syntax: "*"; inherits: false; }\n@property --tw-contrast { syntax: "*"; inherits: false; }\n@property --tw-grayscale { syntax: "*"; inherits: false; }\n@property --tw-hue-rotate { syntax: "*"; inherits: false; }\n@property --tw-invert { syntax: "*"; inherits: false; }\n@property --tw-opacity { syntax: "*"; inherits: false; }\n@property --tw-saturate { syntax: "*"; inherits: false; }\n@property --tw-sepia { syntax: "*"; inherits: false; }\n@property --tw-drop-shadow { syntax: "*"; inherits: false; }\n@property --tw-drop-shadow-color { syntax: "*"; inherits: false; }\n@property --tw-drop-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }\n@property --tw-drop-shadow-size { syntax: "*"; inherits: false; }\n@property --tw-backdrop-blur { syntax: "*"; inherits: false; }\n@property --tw-backdrop-brightness { syntax: "*"; inherits: false; }\n@property --tw-backdrop-contrast { syntax: "*"; inherits: false; }\n@property --tw-backdrop-grayscale { syntax: "*"; inherits: false; }\n@property --tw-backdrop-hue-rotate { syntax: "*"; inherits: false; }\n@property --tw-backdrop-invert { syntax: "*"; inherits: false; }\n@property --tw-backdrop-opacity { syntax: "*"; inherits: false; }\n@property --tw-backdrop-saturate { syntax: "*"; inherits: false; }\n@property --tw-backdrop-sepia { syntax: "*"; inherits: false; }\n@property --tw-duration { syntax: "*"; inherits: false; }\n@property --tw-ease { syntax: "*"; inherits: false; }\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes scale-in {\n  from {\n    transform: scale(0.95);\n    opacity: 0;\n  }\n  to {\n    transform: scale(1);\n    opacity: 1;\n  }\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *,\n    ::before,\n    ::after,\n    ::backdrop {\n      --tw-translate-x: 0;\n      --tw-translate-y: 0;\n      --tw-translate-z: 0;\n      --tw-scale-x: 1;\n      --tw-scale-y: 1;\n      --tw-scale-z: 1;\n      --tw-rotate-x: initial;\n      --tw-rotate-y: initial;\n      --tw-rotate-z: initial;\n      --tw-skew-x: initial;\n      --tw-skew-y: initial;\n      --tw-space-y-reverse: 0;\n      --tw-space-x-reverse: 0;\n      --tw-border-style: solid;\n      --tw-gradient-position: initial;\n      --tw-gradient-from: #0000;\n      --tw-gradient-via: #0000;\n      --tw-gradient-to: #0000;\n      --tw-gradient-stops: initial;\n      --tw-gradient-via-stops: initial;\n      --tw-gradient-from-position: 0%;\n      --tw-gradient-via-position: 50%;\n      --tw-gradient-to-position: 100%;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-tracking: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-outline-style: solid;\n      --tw-blur: initial;\n      --tw-brightness: initial;\n      --tw-contrast: initial;\n      --tw-grayscale: initial;\n      --tw-hue-rotate: initial;\n      --tw-invert: initial;\n      --tw-opacity: initial;\n      --tw-saturate: initial;\n      --tw-sepia: initial;\n      --tw-drop-shadow: initial;\n      --tw-drop-shadow-color: initial;\n      --tw-drop-shadow-alpha: 100%;\n      --tw-drop-shadow-size: initial;\n      --tw-backdrop-blur: initial;\n      --tw-backdrop-brightness: initial;\n      --tw-backdrop-contrast: initial;\n      --tw-backdrop-grayscale: initial;\n      --tw-backdrop-hue-rotate: initial;\n      --tw-backdrop-invert: initial;\n      --tw-backdrop-opacity: initial;\n      --tw-backdrop-saturate: initial;\n      --tw-backdrop-sepia: initial;\n      --tw-duration: initial;\n      --tw-ease: initial;\n    }\n  }\n}\n');
 var STORAGE_KEY = "next-blog-cms-theme";
 var ThemeContext = React.createContext({
   theme: "system",
@@ -169,22 +170,29 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 var buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-background",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline"
+        default: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:ring-primary",
+        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 focus-visible:ring-destructive",
+        "destructive-outline": "border border-destructive/50 text-destructive bg-transparent hover:bg-destructive/10 focus-visible:ring-destructive",
+        outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring",
+        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 focus-visible:ring-secondary",
+        ghost: "hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring",
+        link: "text-primary underline-offset-4 hover:underline focus-visible:ring-primary"
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-5",
-        icon: "h-10 w-10"
+        xs: "h-7 rounded-md px-2 text-xs",
+        sm: "h-8 rounded-md px-3 text-xs",
+        default: "h-9 rounded-lg px-4",
+        lg: "h-10 rounded-lg px-5",
+        xl: "h-11 rounded-lg px-6 text-base",
+        "icon-xs": "h-7 w-7 rounded-md",
+        "icon-sm": "h-8 w-8 rounded-md",
+        icon: "h-9 w-9 rounded-lg",
+        "icon-lg": "h-10 w-10 rounded-lg",
+        "icon-xl": "h-11 w-11 rounded-lg"
       }
     },
     defaultVariants: {
@@ -194,10 +202,9 @@ var buttonVariants = cva(
   }
 );
 var Button = React.forwardRef(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+  ({ className, variant, size, asChild: _asChild = false, ...props }, ref) => {
     return /* @__PURE__ */ jsx(
-      Comp,
+      "button",
       {
         className: cn(buttonVariants({ variant, size, className })),
         ref,
@@ -321,7 +328,7 @@ function ThemeToggle({ className }) {
     /* @__PURE__ */ jsx(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "icon", className: cn("h-10 w-10", className), children: [
       /* @__PURE__ */ jsx(Sun, { className: "h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" }),
       /* @__PURE__ */ jsx(Moon, { className: "absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" }),
-      /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Alternar tema" })
+      /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Toggle theme" })
     ] }) }),
     /* @__PURE__ */ jsxs(DropdownMenuContent, { align: "end", className: "w-40", children: [
       /* @__PURE__ */ jsx(
@@ -329,7 +336,7 @@ function ThemeToggle({ className }) {
         {
           onClick: () => setTheme("light"),
           className: theme === "light" ? "font-semibold" : "",
-          children: "Claro"
+          children: "Light"
         }
       ),
       /* @__PURE__ */ jsx(
@@ -337,7 +344,7 @@ function ThemeToggle({ className }) {
         {
           onClick: () => setTheme("dark"),
           className: theme === "dark" ? "font-semibold" : "",
-          children: "Escuro"
+          children: "Dark"
         }
       ),
       /* @__PURE__ */ jsxs(
@@ -346,8 +353,8 @@ function ThemeToggle({ className }) {
           onClick: () => setTheme("system"),
           className: theme === "system" ? "font-semibold" : "",
           children: [
-            "Sistema (",
-            resolvedTheme === "dark" ? "Escuro" : "Claro",
+            "System (",
+            resolvedTheme === "dark" ? "Dark" : "Light",
             ")"
           ]
         }
@@ -355,58 +362,109 @@ function ThemeToggle({ className }) {
     ] })
   ] });
 }
-var Card = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "div",
-    {
-      ref,
-      className: cn("rounded-lg border bg-card text-card-foreground shadow-sm", className),
-      ...props
-    }
-  )
-);
+var Card = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    ref,
+    className: cn(
+      "rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md",
+      className
+    ),
+    ...props
+  }
+));
 Card.displayName = "Card";
-var CardHeader = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "div",
-    {
-      ref,
-      className: cn("flex flex-col space-y-1.5 p-6", className),
-      ...props
-    }
-  )
-);
+var CardHeader = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    ref,
+    className: cn("flex flex-col space-y-1.5 p-6", className),
+    ...props
+  }
+));
 CardHeader.displayName = "CardHeader";
-var CardTitle = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("h3", { ref, className: cn("text-2xl font-semibold leading-none tracking-tight", className), ...props })
-);
+var CardTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "h3",
+  {
+    ref,
+    className: cn(
+      "text-lg font-semibold leading-none tracking-tight",
+      className
+    ),
+    ...props
+  }
+));
 CardTitle.displayName = "CardTitle";
-var CardDescription = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("p", { ref, className: cn("text-sm text-muted-foreground", className), ...props })
-);
+var CardDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "p",
+  {
+    ref,
+    className: cn("text-sm text-muted-foreground", className),
+    ...props
+  }
+));
 CardDescription.displayName = "CardDescription";
-var CardContent = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("p-6 pt-0", className), ...props })
-);
+var CardAction = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    ref,
+    className: cn("ml-auto flex items-center gap-2", className),
+    ...props
+  }
+));
+CardAction.displayName = "CardAction";
+var CardContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("p-6 pt-0", className), ...props }));
 CardContent.displayName = "CardContent";
-var CardFooter = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("flex items-center p-6 pt-0", className), ...props })
-);
+var CardPanel = CardContent;
+CardPanel.displayName = "CardPanel";
+var CardFooter = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    ref,
+    className: cn("flex items-center p-6 pt-0", className),
+    ...props
+  }
+));
 CardFooter.displayName = "CardFooter";
-var Input = React.forwardRef(({ className, type, ...props }, ref) => {
-  return /* @__PURE__ */ jsx(
-    "input",
-    {
-      type,
-      className: cn(
-        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        className
-      ),
-      ref,
-      ...props
+var inputVariants = cva(
+  "flex w-full border border-input bg-background text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50",
+  {
+    variants: {
+      size: {
+        sm: "h-8 rounded-md px-2.5 text-xs",
+        default: "h-9 rounded-lg px-3",
+        lg: "h-10 rounded-lg px-4"
+      }
+    },
+    defaultVariants: {
+      size: "default"
     }
-  );
-});
+  }
+);
+var Input = React.forwardRef(
+  ({ className, type, size, unstyled, ...props }, ref) => {
+    if (unstyled) {
+      return /* @__PURE__ */ jsx(
+        "input",
+        {
+          type,
+          className,
+          ref,
+          ...props
+        }
+      );
+    }
+    return /* @__PURE__ */ jsx(
+      "input",
+      {
+        type,
+        className: cn(inputVariants({ size, className })),
+        ref,
+        ...props
+      }
+    );
+  }
+);
 Input.displayName = "Input";
 var Label2 = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   LabelPrimitive.Root,
@@ -432,138 +490,356 @@ var Textarea = React.forwardRef(({ className, ...props }, ref) => {
 });
 Textarea.displayName = "Textarea";
 var badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
-        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground"
+        default: "border-transparent bg-primary text-primary-foreground shadow-sm",
+        secondary: "border-transparent bg-secondary text-secondary-foreground",
+        destructive: "border-transparent bg-destructive text-destructive-foreground shadow-sm",
+        error: "border-transparent bg-destructive text-destructive-foreground shadow-sm",
+        outline: "border-border text-foreground",
+        success: "border-transparent bg-success text-success-foreground shadow-sm",
+        warning: "border-transparent bg-warning text-warning-foreground shadow-sm",
+        info: "border-transparent bg-info text-info-foreground shadow-sm"
+      },
+      size: {
+        sm: "px-2 py-0 text-[10px]",
+        default: "px-2.5 py-0.5 text-xs",
+        lg: "px-3 py-1 text-sm"
       }
     },
     defaultVariants: {
-      variant: "default"
+      variant: "default",
+      size: "default"
     }
   }
 );
-function Badge({ className, variant, ...props }) {
-  return /* @__PURE__ */ jsx("div", { className: cn(badgeVariants({ variant }), className), ...props });
+function Badge({ className, variant, size, ...props }) {
+  return /* @__PURE__ */ jsx("div", { className: cn(badgeVariants({ variant, size }), className), ...props });
 }
-var Table = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { className: "relative w-full overflow-auto", children: /* @__PURE__ */ jsx(
-    "table",
-    {
-      ref,
-      className: cn("w-full caption-bottom text-sm", className),
-      ...props
-    }
-  ) })
-);
+var Table = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { className: "relative w-full overflow-auto rounded-lg", children: /* @__PURE__ */ jsx(
+  "table",
+  {
+    ref,
+    className: cn("w-full caption-bottom text-sm", className),
+    ...props
+  }
+) }));
 Table.displayName = "Table";
-var TableHeader = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("thead", { ref, className: cn("[&_tr]:border-b", className), ...props })
-);
+var TableHeader = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "thead",
+  {
+    ref,
+    className: cn("[&_tr]:border-b bg-muted/30", className),
+    ...props
+  }
+));
 TableHeader.displayName = "TableHeader";
-var TableBody = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("tbody", { ref, className: cn("[&_tr:last-child]:border-0", className), ...props })
-);
+var TableBody = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "tbody",
+  {
+    ref,
+    className: cn("[&_tr:last-child]:border-0", className),
+    ...props
+  }
+));
 TableBody.displayName = "TableBody";
-var TableFooter = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "tfoot",
-    {
-      ref,
-      className: cn("bg-primary font-medium text-primary-foreground", className),
-      ...props
-    }
-  )
-);
+var TableFooter = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "tfoot",
+  {
+    ref,
+    className: cn(
+      "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
+      className
+    ),
+    ...props
+  }
+));
 TableFooter.displayName = "TableFooter";
-var TableRow = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "tr",
+var TableRow = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "tr",
+  {
+    ref,
+    className: cn(
+      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+      className
+    ),
+    ...props
+  }
+));
+TableRow.displayName = "TableRow";
+var TableHead = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "th",
+  {
+    ref,
+    className: cn(
+      "h-11 px-4 text-left align-middle text-xs font-semibold uppercase tracking-wider text-muted-foreground [&:has([role=checkbox])]:pr-0",
+      className
+    ),
+    ...props
+  }
+));
+TableHead.displayName = "TableHead";
+var TableCell = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "td",
+  {
+    ref,
+    className: cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className),
+    ...props
+  }
+));
+TableCell.displayName = "TableCell";
+var TableCaption = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  "caption",
+  {
+    ref,
+    className: cn("mt-4 text-sm text-muted-foreground", className),
+    ...props
+  }
+));
+TableCaption.displayName = "TableCaption";
+var Tabs = React.forwardRef(
+  ({ value, onValueChange, defaultValue, ...props }, ref) => /* @__PURE__ */ jsx(
+    Tabs$1.Root,
     {
       ref,
-      className: cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className),
+      value,
+      defaultValue,
+      onValueChange,
       ...props
     }
   )
 );
-TableRow.displayName = "TableRow";
-var TableHead = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "th",
+Tabs.displayName = "Tabs";
+var TabsList = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  Tabs$1.List,
+  {
+    ref,
+    className: cn(
+      "inline-flex h-10 items-center justify-center gap-1 rounded-lg bg-muted p-1 text-muted-foreground",
+      className
+    ),
+    ...props
+  }
+));
+TabsList.displayName = "TabsList";
+var TabsTrigger = React.forwardRef(
+  ({ className, value, ...props }, ref) => /* @__PURE__ */ jsx(
+    Tabs$1.Tab,
     {
       ref,
+      value,
       className: cn(
-        "h-12 px-4 text-left align-middle text-xs font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
+        "inline-flex min-w-[100px] items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[selected]:bg-background data-[selected]:text-foreground data-[selected]:shadow-sm",
         className
       ),
       ...props
     }
   )
 );
-TableHead.displayName = "TableHead";
-var TableCell = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "td",
+TabsTrigger.displayName = "TabsTrigger";
+var TabsContent = React.forwardRef(
+  ({ className, value, ...props }, ref) => /* @__PURE__ */ jsx(
+    Tabs$1.Panel,
     {
       ref,
-      className: cn("px-4 py-3 align-middle [&:has([role=checkbox])]:pr-0", className),
+      value,
+      keepMounted: false,
+      className: cn(
+        "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        className
+      ),
       ...props
     }
   )
 );
-TableCell.displayName = "TableCell";
-var TableCaption = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-    "caption",
+TabsContent.displayName = "TabsContent";
+var Sheet = SheetPrimitive.Root;
+var SheetPortal = SheetPrimitive.Portal;
+var SheetOverlay = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  SheetPrimitive.Overlay,
+  {
+    className: cn(
+      "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    ),
+    ...props,
+    ref
+  }
+));
+SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
+var sheetVariants = cva(
+  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  {
+    variants: {
+      side: {
+        top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+        bottom: "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+        left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+        right: "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm"
+      }
+    },
+    defaultVariants: {
+      side: "right"
+    }
+  }
+);
+var SheetContent = React.forwardRef(({ side = "right", className, children, ...props }, ref) => /* @__PURE__ */ jsxs(SheetPortal, { children: [
+  /* @__PURE__ */ jsx(SheetOverlay, {}),
+  /* @__PURE__ */ jsxs(
+    SheetPrimitive.Content,
     {
       ref,
-      className: cn("mt-4 text-sm text-muted-foreground", className),
-      ...props
+      className: cn(sheetVariants({ side }), className),
+      ...props,
+      children: [
+        children,
+        /* @__PURE__ */ jsxs(SheetPrimitive.Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary", children: [
+          /* @__PURE__ */ jsx(X, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Close" })
+        ] })
+      ]
     }
   )
+] }));
+SheetContent.displayName = SheetPrimitive.Content.displayName;
+var SheetHeader = ({
+  className,
+  ...props
+}) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    className: cn(
+      "flex flex-col space-y-2 text-center sm:text-left",
+      className
+    ),
+    ...props
+  }
 );
-TableCaption.displayName = "TableCaption";
-var Tabs = TabsPrimitive.Root;
-var TabsList = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  TabsPrimitive.List,
+SheetHeader.displayName = "SheetHeader";
+var SheetTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  SheetPrimitive.Title,
+  {
+    ref,
+    className: cn("text-lg font-semibold text-foreground", className),
+    ...props
+  }
+));
+SheetTitle.displayName = SheetPrimitive.Title.displayName;
+var SheetDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  SheetPrimitive.Description,
+  {
+    ref,
+    className: cn("text-sm text-muted-foreground", className),
+    ...props
+  }
+));
+SheetDescription.displayName = SheetPrimitive.Description.displayName;
+var Dialog = Dialog$1.Root;
+var DialogTrigger = React.forwardRef(
+  ({ asChild, children, ...props }, ref) => {
+    if (asChild && React.isValidElement(children)) {
+      return /* @__PURE__ */ jsx(Dialog$1.Trigger, { ref, render: children, ...props });
+    }
+    return /* @__PURE__ */ jsx(Dialog$1.Trigger, { ref, ...props, children });
+  }
+);
+DialogTrigger.displayName = "DialogTrigger";
+var DialogPortal = Dialog$1.Portal;
+var DialogClose = React.forwardRef(
+  ({ asChild, children, ...props }, ref) => {
+    if (asChild && React.isValidElement(children)) {
+      return /* @__PURE__ */ jsx(Dialog$1.Close, { ref, render: children, ...props });
+    }
+    return /* @__PURE__ */ jsx(Dialog$1.Close, { ref, ...props, children });
+  }
+);
+DialogClose.displayName = "DialogClose";
+var DialogBackdrop = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  Dialog$1.Backdrop,
   {
     ref,
     className: cn(
-      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+      "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
       className
     ),
     ...props
   }
 ));
-TabsList.displayName = TabsPrimitive.List.displayName;
-var TabsTrigger = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  TabsPrimitive.Trigger,
+DialogBackdrop.displayName = "DialogBackdrop";
+var DialogPopup = React.forwardRef(
+  ({ className, children, showCloseButton = true, ...props }, ref) => /* @__PURE__ */ jsxs(DialogPortal, { children: [
+    /* @__PURE__ */ jsx(DialogBackdrop, {}),
+    /* @__PURE__ */ jsxs(
+      Dialog$1.Popup,
+      {
+        ref,
+        className: cn(
+          "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border border-border bg-card p-6 shadow-lg transition-all duration-200 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
+          className
+        ),
+        ...props,
+        children: [
+          children,
+          showCloseButton && /* @__PURE__ */ jsxs(DialogClose, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none", children: [
+            /* @__PURE__ */ jsx(X, { className: "h-4 w-4" }),
+            /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Close" })
+          ] })
+        ]
+      }
+    )
+  ] })
+);
+DialogPopup.displayName = "DialogPopup";
+var DialogHeader = ({
+  className,
+  ...props
+}) => /* @__PURE__ */ jsx(
+  "div",
   {
-    ref,
+    className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className),
+    ...props
+  }
+);
+DialogHeader.displayName = "DialogHeader";
+var DialogFooter = ({
+  className,
+  ...props
+}) => /* @__PURE__ */ jsx(
+  "div",
+  {
     className: cn(
-      "inline-flex min-w-[120px] items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+      "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
       className
     ),
     ...props
   }
-));
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
-var TabsContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  TabsPrimitive.Content,
+);
+DialogFooter.displayName = "DialogFooter";
+var DialogTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  Dialog$1.Title,
   {
     ref,
-    className: cn(
-      "mt-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className
-    ),
+    className: cn("text-lg font-semibold leading-none tracking-tight", className),
     ...props
   }
 ));
-TabsContent.displayName = TabsPrimitive.Content.displayName;
+DialogTitle.displayName = "DialogTitle";
+var DialogDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  Dialog$1.Description,
+  {
+    ref,
+    className: cn("text-sm text-muted-foreground", className),
+    ...props
+  }
+));
+DialogDescription.displayName = "DialogDescription";
+var DialogPanel = ({
+  className,
+  ...props
+}) => /* @__PURE__ */ jsx("div", { className: cn("grid gap-4", className), ...props });
+DialogPanel.displayName = "DialogPanel";
 var Switch = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   SwitchPrimitives.Root,
   {
@@ -590,7 +866,7 @@ var ToastViewport = React.forwardRef(({ className, ...props }, ref) => /* @__PUR
   {
     ref,
     className: cn(
-      "fixed top-4 right-4 z-[100] flex w-full max-w-sm flex-col gap-2 p-4 sm:gap-3 sm:p-0",
+      "fixed bottom-4 right-4 z-[100] flex w-full max-w-sm flex-col-reverse gap-2 p-4 sm:gap-3 sm:p-0",
       className
     ),
     ...props
@@ -1383,45 +1659,52 @@ var Sidebar = ({
   const navigationItems = useMemo(() => buildNavigationItems(t), [t]);
   const brandTitle = branding?.title?.trim() || t("nav.brandTitle", "Blog CMS");
   const brandTagline = branding?.tagline?.trim() || t("nav.tagline", "Multi-language content for Next.js");
-  return /* @__PURE__ */ jsxs("aside", { className: "hidden w-64 flex-none border-r bg-card/40 shadow-sm lg:flex lg:flex-col", children: [
-    /* @__PURE__ */ jsx("div", { className: "flex h-16 items-center border-b px-6", children: /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("p", { className: "text-sm font-semibold", children: brandTitle }),
-      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: brandTagline })
+  return /* @__PURE__ */ jsxs("aside", { className: "hidden w-64 flex-none border-r border-sidebar-border bg-sidebar shadow-sm lg:flex lg:flex-col", children: [
+    /* @__PURE__ */ jsx("div", { className: "flex h-20 items-center gap-3 border-b border-sidebar-border px-6", children: /* @__PURE__ */ jsxs("div", { className: "flex-1 overflow-hidden", children: [
+      /* @__PURE__ */ jsx("p", { className: "truncate text-sm font-bold text-sidebar-foreground", children: brandTitle }),
+      /* @__PURE__ */ jsx("p", { className: "truncate text-xs text-muted-foreground", children: brandTagline })
     ] }) }),
     /* @__PURE__ */ jsx("nav", { className: "flex-1 space-y-1 p-4", children: navigationItems.map((item) => {
       const Icon = item.icon;
       const isActive = current.type === item.route.type;
       return /* @__PURE__ */ jsxs(
-        Button,
+        "button",
         {
-          variant: isActive ? "secondary" : "ghost",
-          className: cn("w-full justify-start gap-2", isActive && "font-semibold"),
+          type: "button",
+          className: cn(
+            "relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+            isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          ),
           onClick: () => navigate(item.path),
           children: [
-            /* @__PURE__ */ jsx(Icon, { className: "h-4 w-4" }),
+            isActive && /* @__PURE__ */ jsx("span", { className: "absolute inset-y-0 left-0 my-auto h-6 w-1 rounded-r-full bg-primary" }),
+            /* @__PURE__ */ jsx(Icon, { className: cn("h-4 w-4", isActive && "text-primary") }),
             item.label
           ]
         },
         item.label
       );
     }) }),
-    /* @__PURE__ */ jsx("div", { className: "border-t px-6 py-3 text-xs text-muted-foreground", children: "next-blog-cms v0.1.2" })
+    /* @__PURE__ */ jsx("div", { className: "border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground", children: "next-blog-cms v0.1.2" })
   ] });
 };
 var MobileNav = ({ current, navigate }) => {
   const t = useTranslate();
   const navigationItems = useMemo(() => buildNavigationItems(t), [t]);
-  return /* @__PURE__ */ jsx("nav", { className: "flex items-center gap-2 border-b bg-card/60 p-2 lg:hidden", children: navigationItems.map((item) => {
+  return /* @__PURE__ */ jsx("nav", { className: "flex items-center gap-1 border-b bg-sidebar p-2 lg:hidden", children: navigationItems.map((item) => {
     const Icon = item.icon;
     const isActive = current.type === item.route.type;
     return /* @__PURE__ */ jsxs(
-      Button,
+      "button",
       {
-        variant: isActive ? "secondary" : "ghost",
-        size: "icon",
-        className: cn("h-10 w-10", isActive && "bg-secondary font-semibold"),
+        type: "button",
+        className: cn(
+          "relative flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
+          isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+        ),
         onClick: () => navigate(item.path),
         children: [
+          isActive && /* @__PURE__ */ jsx("span", { className: "absolute bottom-0 left-1/2 h-1 w-6 -translate-x-1/2 rounded-t-full bg-primary" }),
           /* @__PURE__ */ jsx(Icon, { className: "h-4 w-4" }),
           /* @__PURE__ */ jsx("span", { className: "sr-only", children: item.label })
         ]
@@ -1435,28 +1718,41 @@ var Header = ({ title, onLogout }) => {
     state: { user }
   } = useContext(AdminContext);
   const t = useTranslate();
-  return /* @__PURE__ */ jsxs("div", { className: "flex h-16 items-center justify-between border-b bg-card/60 px-4 py-3 md:px-6", children: [
+  const userInitial = (user?.name?.[0] ?? "U").toUpperCase();
+  return /* @__PURE__ */ jsxs("div", { className: "flex h-16 items-center justify-between border-b bg-card/80 px-4 py-3 backdrop-blur-sm md:px-6", children: [
     /* @__PURE__ */ jsxs("div", { children: [
       /* @__PURE__ */ jsx("h1", { className: "text-lg font-semibold md:text-xl", children: title }),
       /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: t("header.subtitle", "Manage your blog content with ease") })
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
-      /* @__PURE__ */ jsxs("div", { className: "hidden items-center gap-2 rounded-full border px-3 py-1 text-sm text-muted-foreground sm:flex", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+      /* @__PURE__ */ jsxs("div", { className: "hidden items-center gap-2.5 rounded-full border bg-background/50 px-3 py-1.5 text-sm shadow-sm sm:flex", children: [
+        /* @__PURE__ */ jsx("div", { className: "flex h-7 w-7 items-center justify-center rounded-full bg-gradient-brand text-xs font-bold text-white", children: userInitial }),
         /* @__PURE__ */ jsx("span", { className: "font-medium text-foreground", children: user?.name ?? t("header.userDefaultName", "User") }),
-        /* @__PURE__ */ jsx("span", { className: "text-xs uppercase", children: user?.role })
+        /* @__PURE__ */ jsx(Badge, { variant: "secondary", className: "text-[10px] uppercase", children: user?.role })
       ] }),
       /* @__PURE__ */ jsx(ThemeToggle, {}),
-      /* @__PURE__ */ jsxs(Button, { variant: "outline", onClick: onLogout, className: "gap-2", children: [
-        /* @__PURE__ */ jsx(LogOut, { className: "h-4 w-4" }),
-        /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: t("header.signOut", "Sign out") })
-      ] })
+      /* @__PURE__ */ jsxs(
+        Button,
+        {
+          variant: "outline",
+          onClick: onLogout,
+          className: "gap-2 transition-colors hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive",
+          children: [
+            /* @__PURE__ */ jsx(LogOut, { className: "h-4 w-4" }),
+            /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: t("header.signOut", "Sign out") })
+          ]
+        }
+      )
     ] })
   ] });
 };
-var StatsCard = ({ title, value }) => /* @__PURE__ */ jsx(Card, { children: /* @__PURE__ */ jsxs(CardHeader, { className: "pb-2", children: [
-  /* @__PURE__ */ jsx(CardDescription, { children: title }),
-  /* @__PURE__ */ jsx(CardTitle, { className: "text-3xl font-semibold tracking-tight", children: value })
-] }) });
+var StatsCard = ({ title, value, icon: Icon, colorClass = "bg-accent-blue" }) => /* @__PURE__ */ jsx(Card, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardHeader, { className: "pb-2", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between", children: [
+  /* @__PURE__ */ jsxs("div", { className: "space-y-1", children: [
+    /* @__PURE__ */ jsx(CardDescription, { children: title }),
+    /* @__PURE__ */ jsx(CardTitle, { className: "text-3xl font-bold tracking-tight", children: value })
+  ] }),
+  Icon && /* @__PURE__ */ jsx("div", { className: cn("rounded-xl p-2.5 shadow-sm", colorClass), children: /* @__PURE__ */ jsx(Icon, { className: "h-5 w-5 text-white" }) })
+] }) }) });
 var DashboardView = ({ navigate }) => {
   const t = useTranslate();
   const [loading, setLoading] = useState(true);
@@ -1485,10 +1781,42 @@ var DashboardView = ({ navigate }) => {
   const publishedCount = posts.filter((post) => post.status === "published").length;
   return /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxs("div", { className: "grid gap-4 md:grid-cols-2 xl:grid-cols-4", children: [
-      /* @__PURE__ */ jsx(StatsCard, { title: t("dashboard.stats.published", "Published posts"), value: publishedCount }),
-      /* @__PURE__ */ jsx(StatsCard, { title: t("dashboard.stats.drafts", "Drafts"), value: posts.length - publishedCount }),
-      /* @__PURE__ */ jsx(StatsCard, { title: t("dashboard.stats.categories", "Categories"), value: categories.length }),
-      /* @__PURE__ */ jsx(StatsCard, { title: t("dashboard.stats.users", "Users"), value: users.length })
+      /* @__PURE__ */ jsx(
+        StatsCard,
+        {
+          title: t("dashboard.stats.published", "Published posts"),
+          value: publishedCount,
+          icon: FileText,
+          colorClass: "bg-accent-blue"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        StatsCard,
+        {
+          title: t("dashboard.stats.drafts", "Drafts"),
+          value: posts.length - publishedCount,
+          icon: FileText,
+          colorClass: "bg-accent-amber"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        StatsCard,
+        {
+          title: t("dashboard.stats.categories", "Categories"),
+          value: categories.length,
+          icon: FolderTree,
+          colorClass: "bg-accent-green"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        StatsCard,
+        {
+          title: t("dashboard.stats.users", "Users"),
+          value: users.length,
+          icon: UsersRound,
+          colorClass: "bg-accent-purple"
+        }
+      )
     ] }),
     /* @__PURE__ */ jsxs(Card, { children: [
       /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0", children: [
@@ -1507,7 +1835,7 @@ var DashboardView = ({ navigate }) => {
         /* @__PURE__ */ jsxs(TableBody, { children: [
           posts.slice(0, 5).map((post) => /* @__PURE__ */ jsxs(TableRow, { className: "cursor-pointer", onClick: () => navigate(`/posts/${post.id}`), children: [
             /* @__PURE__ */ jsx(TableCell, { className: "font-medium", children: post.translations[0]?.title ?? post.slug }),
-            /* @__PURE__ */ jsx(TableCell, { children: /* @__PURE__ */ jsx(Badge, { variant: post.status === "published" ? "default" : "secondary", children: post.status === "published" ? t("common.status.published", "Published") : t("common.status.draft", "Draft") }) }),
+            /* @__PURE__ */ jsx(TableCell, { children: /* @__PURE__ */ jsx(Badge, { variant: post.status === "published" ? "success" : "warning", children: post.status === "published" ? t("common.status.published", "Published") : t("common.status.draft", "Draft") }) }),
             /* @__PURE__ */ jsx(TableCell, { children: formatDate(post.updatedAt) })
           ] }, post.id)),
           posts.length === 0 && /* @__PURE__ */ jsx(TableRow, { children: /* @__PURE__ */ jsx(TableCell, { colSpan: 3, className: "text-center text-sm text-muted-foreground", children: t("dashboard.latestPosts.empty", "No posts have been published yet.") }) })
@@ -1521,7 +1849,9 @@ var PostListView = ({ navigate }) => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const filterButtons = useMemo(() => buildPostFilterButtons(t), [t]);
+  const activeFilterCount = statusFilter !== "all" ? 1 : 0;
   const loadPosts = useCallback(async () => {
     setLoading(true);
     try {
@@ -1563,7 +1893,7 @@ var PostListView = ({ navigate }) => {
       {
         id: "status",
         header: t("posts.table.status", "Status"),
-        cell: ({ row }) => /* @__PURE__ */ jsx(Badge, { variant: row.original.status === "published" ? "default" : "secondary", children: row.original.status === "published" ? t("common.status.published", "Published") : t("common.status.draft", "Draft") })
+        cell: ({ row }) => /* @__PURE__ */ jsx(Badge, { variant: row.original.status === "published" ? "success" : "warning", children: row.original.status === "published" ? t("common.status.published", "Published") : t("common.status.draft", "Draft") })
       },
       {
         accessorKey: "updatedAt",
@@ -1586,21 +1916,88 @@ var PostListView = ({ navigate }) => {
   if (loading) return /* @__PURE__ */ jsx(LoadingState, {});
   return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", children: [
-      /* @__PURE__ */ jsx("div", { className: "flex gap-2", children: filterButtons.map((filter) => /* @__PURE__ */ jsx(
-        Button,
-        {
-          variant: statusFilter === filter.value ? "default" : "outline",
-          onClick: () => setStatusFilter(filter.value),
-          children: filter.label
-        },
-        filter.value
-      )) }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsxs(
+          Button,
+          {
+            variant: "outline",
+            onClick: () => setFilterOpen(true),
+            className: "gap-2",
+            children: [
+              /* @__PURE__ */ jsx(Filter, { className: "h-4 w-4" }),
+              t("posts.filters.button", "Filters"),
+              activeFilterCount > 0 && /* @__PURE__ */ jsx(Badge, { variant: "default", className: "ml-1 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px]", children: activeFilterCount })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsx("div", { className: "hidden gap-2 sm:flex", children: filterButtons.map((filter) => /* @__PURE__ */ jsx(
+          Button,
+          {
+            variant: statusFilter === filter.value ? "default" : "outline",
+            size: "sm",
+            onClick: () => setStatusFilter(filter.value),
+            children: filter.label
+          },
+          filter.value
+        )) })
+      ] }),
       /* @__PURE__ */ jsxs(Button, { onClick: () => navigate("/posts/new"), className: "gap-2", children: [
         /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4" }),
         " ",
         t("posts.actions.new", "New post")
       ] })
     ] }),
+    /* @__PURE__ */ jsx(Sheet, { open: filterOpen, onOpenChange: setFilterOpen, children: /* @__PURE__ */ jsxs(SheetContent, { side: "right", className: "w-80", children: [
+      /* @__PURE__ */ jsxs(SheetHeader, { children: [
+        /* @__PURE__ */ jsx(SheetTitle, { children: t("posts.filters.title", "Filter Posts") }),
+        /* @__PURE__ */ jsx(SheetDescription, { children: t("posts.filters.description", "Refine the posts list by status.") })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "mt-6 space-y-4", children: [
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsx(Label2, { className: "text-sm font-medium", children: t("posts.filters.statusLabel", "Status") }),
+          /* @__PURE__ */ jsx("div", { className: "flex flex-col gap-2", children: filterButtons.map((filter) => /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              className: cn(
+                "flex items-center gap-3 rounded-lg border px-4 py-3 text-sm transition-all duration-200",
+                statusFilter === filter.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:bg-muted"
+              ),
+              onClick: () => {
+                setStatusFilter(filter.value);
+                setFilterOpen(false);
+              },
+              children: [
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: cn(
+                      "h-4 w-4 rounded-full border-2",
+                      statusFilter === filter.value ? "border-primary bg-primary" : "border-muted-foreground/50"
+                    ),
+                    children: statusFilter === filter.value && /* @__PURE__ */ jsx("div", { className: "flex h-full items-center justify-center", children: /* @__PURE__ */ jsx("div", { className: "h-1.5 w-1.5 rounded-full bg-white" }) })
+                  }
+                ),
+                filter.label
+              ]
+            },
+            filter.value
+          )) })
+        ] }),
+        statusFilter !== "all" && /* @__PURE__ */ jsx(
+          Button,
+          {
+            variant: "outline",
+            className: "w-full",
+            onClick: () => {
+              setStatusFilter("all");
+              setFilterOpen(false);
+            },
+            children: t("posts.filters.clearAll", "Clear all filters")
+          }
+        )
+      ] })
+    ] }) }),
     /* @__PURE__ */ jsx(DataTable, { columns, data: posts })
   ] });
 };
@@ -1868,7 +2265,7 @@ var PostFormView = ({ postId, navigate }) => {
             "select",
             {
               id: "post-status",
-              className: "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              className: "h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all duration-200 hover:border-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0",
               ...form.register("status"),
               children: [
                 /* @__PURE__ */ jsx("option", { value: "draft", children: t("common.status.draft", "Draft") }),
@@ -1883,7 +2280,7 @@ var PostFormView = ({ postId, navigate }) => {
             "select",
             {
               id: "post-category",
-              className: "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              className: "h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all duration-200 hover:border-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0",
               ...form.register("categoryId"),
               children: [
                 /* @__PURE__ */ jsx("option", { value: "", children: t("posts.form.categoryNone", "No category") }),
@@ -2513,7 +2910,7 @@ var UserFormView = ({ userId, navigate }) => {
           "select",
           {
             id: "user-role",
-            className: "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            className: "h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all duration-200 hover:border-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0",
             ...form.register("role"),
             children: [
               /* @__PURE__ */ jsx("option", { value: "admin", children: t("users.roles.admin", "Admin") }),
@@ -2540,6 +2937,7 @@ var LanguagesView = ({ refreshLanguages }) => {
   const t = useTranslate();
   const [form, setForm] = useState({ code: "", name: "" });
   const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!form.code || !form.name) {
@@ -2555,6 +2953,7 @@ var LanguagesView = ({ refreshLanguages }) => {
       await upsertLanguage({ code: form.code.toLowerCase(), name: form.name });
       notify(t("languages.form.saveSuccess", "Language saved successfully"), "default");
       setForm({ code: "", name: "" });
+      setDialogOpen(false);
       await refreshLanguages();
     } catch (error) {
       if (error instanceof ApiError) {
@@ -2612,25 +3011,35 @@ var LanguagesView = ({ refreshLanguages }) => {
       {
         accessorKey: "code",
         header: t("languages.table.code", "Code"),
-        cell: ({ row }) => /* @__PURE__ */ jsx("span", { className: "font-medium uppercase", children: row.original.code })
-      },
-      {
-        accessorKey: "name",
-        header: t("languages.table.name", "Name")
+        cell: ({ row }) => /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx("span", { className: "flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold uppercase text-primary", children: row.original.code }),
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: row.original.name })
+        ] })
       },
       {
         id: "isDefault",
         header: t("languages.table.default", "Default"),
-        cell: ({ row }) => /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
-          /* @__PURE__ */ jsx(Badge, { variant: row.original.isDefault ? "default" : "secondary", children: row.original.isDefault ? t("languages.badges.default", "Default") : t("languages.badges.alternative", "Alternative") }),
-          !row.original.isDefault && /* @__PURE__ */ jsx(Button, { variant: "ghost", size: "sm", onClick: () => handleToggle(row.original, "isDefault"), children: t("languages.actions.setDefault", "Set as default") })
-        ] }),
+        cell: ({ row }) => /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2", children: row.original.isDefault ? /* @__PURE__ */ jsx(Badge, { variant: "default", children: t("languages.badges.default", "Default") }) : /* @__PURE__ */ jsx(
+          Button,
+          {
+            variant: "ghost",
+            size: "sm",
+            onClick: () => handleToggle(row.original, "isDefault"),
+            children: t("languages.actions.setDefault", "Set as default")
+          }
+        ) }),
         enableSorting: false
       },
       {
         id: "enabled",
         header: t("languages.table.enabled", "Enabled"),
-        cell: ({ row }) => /* @__PURE__ */ jsx(Switch, { checked: row.original.enabled, onCheckedChange: () => handleToggle(row.original, "enabled") }),
+        cell: ({ row }) => /* @__PURE__ */ jsx(
+          Switch,
+          {
+            checked: row.original.enabled,
+            onCheckedChange: () => handleToggle(row.original, "enabled")
+          }
+        ),
         enableSorting: false
       },
       {
@@ -2639,7 +3048,7 @@ var LanguagesView = ({ refreshLanguages }) => {
         cell: ({ row }) => /* @__PURE__ */ jsx("div", { className: "flex justify-end", children: /* @__PURE__ */ jsx(
           Button,
           {
-            variant: "destructive",
+            variant: "destructive-outline",
             size: "sm",
             onClick: () => handleDelete(row.original.code),
             disabled: row.original.isDefault,
@@ -2651,40 +3060,60 @@ var LanguagesView = ({ refreshLanguages }) => {
     ],
     [handleDelete, handleToggle, t]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-    /* @__PURE__ */ jsxs(Card, { children: [
-      /* @__PURE__ */ jsxs(CardHeader, { children: [
-        /* @__PURE__ */ jsx(CardTitle, { children: t("languages.form.title", "Add language") }),
-        /* @__PURE__ */ jsx(CardDescription, { children: t("languages.form.description", "Choose which translations are available in the admin.") })
+  return /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs(Card, { children: [
+    /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0", children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx(CardTitle, { children: t("languages.title", "Languages") }),
+        /* @__PURE__ */ jsx(CardDescription, { children: t("languages.description", "Manage available languages for your blog content.") })
       ] }),
-      /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, className: "grid gap-4 sm:grid-cols-[200px,1fr,120px]", children: [
-        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-          /* @__PURE__ */ jsx(Label2, { htmlFor: "language-code", children: t("languages.form.codeLabel", "Code (e.g., pt, en)") }),
-          /* @__PURE__ */ jsx(
-            Input,
-            {
-              id: "language-code",
-              value: form.code,
-              onChange: (event) => setForm((prev) => ({ ...prev, code: event.target.value }))
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-          /* @__PURE__ */ jsx(Label2, { htmlFor: "language-name", children: t("languages.form.nameLabel", "Name") }),
-          /* @__PURE__ */ jsx(
-            Input,
-            {
-              id: "language-name",
-              value: form.name,
-              onChange: (event) => setForm((prev) => ({ ...prev, name: event.target.value }))
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsx("div", { className: "flex items-end", children: /* @__PURE__ */ jsx(Button, { type: "submit", className: "w-full", disabled: loading, children: loading ? t("common.saving", "Saving...") : t("languages.form.addAction", "Add") }) })
-      ] }) })
+      /* @__PURE__ */ jsxs(Dialog, { open: dialogOpen, onOpenChange: setDialogOpen, children: [
+        /* @__PURE__ */ jsx(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(Button, { className: "gap-2", children: [
+          /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4" }),
+          t("languages.actions.add", "Add Language")
+        ] }) }),
+        /* @__PURE__ */ jsxs(DialogPopup, { className: "sm:max-w-md", children: [
+          /* @__PURE__ */ jsxs(DialogHeader, { children: [
+            /* @__PURE__ */ jsx(DialogTitle, { children: t("languages.form.title", "Add new language") }),
+            /* @__PURE__ */ jsx(DialogDescription, { children: t("languages.form.description", "Enter the language code and display name.") })
+          ] }),
+          /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, children: [
+            /* @__PURE__ */ jsxs(DialogPanel, { className: "grid gap-4 py-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+                /* @__PURE__ */ jsx(Label2, { htmlFor: "language-code", children: t("languages.form.codeLabel", "Language code") }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "language-code",
+                    placeholder: "pt, en, es...",
+                    value: form.code,
+                    onChange: (event) => setForm((prev) => ({ ...prev, code: event.target.value }))
+                  }
+                ),
+                /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: t("languages.form.codeHint", "Use ISO 639-1 codes (2-5 letters)") })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+                /* @__PURE__ */ jsx(Label2, { htmlFor: "language-name", children: t("languages.form.nameLabel", "Display name") }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "language-name",
+                    placeholder: "Portugu\xEAs, English...",
+                    value: form.name,
+                    onChange: (event) => setForm((prev) => ({ ...prev, name: event.target.value }))
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs(DialogFooter, { children: [
+              /* @__PURE__ */ jsx(DialogClose, { asChild: true, children: /* @__PURE__ */ jsx(Button, { type: "button", variant: "outline", children: t("common.cancel", "Cancel") }) }),
+              /* @__PURE__ */ jsx(Button, { type: "submit", disabled: loading, children: loading ? t("common.saving", "Saving...") : t("languages.form.addAction", "Add language") })
+            ] })
+          ] })
+        ] })
+      ] })
     ] }),
-    /* @__PURE__ */ jsx(DataTable, { columns, data: languages })
-  ] });
+    /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(DataTable, { columns, data: languages }) })
+  ] }) });
 };
 var RouteView = ({ route, navigate }) => {
   const { refreshLanguages } = useContext(AdminContext);
@@ -2715,10 +3144,41 @@ var RouteView = ({ route, navigate }) => {
       return /* @__PURE__ */ jsx(DashboardView, { navigate });
   }
 };
+var AuthBrandPanel = ({ title, tagline }) => {
+  const t = useTranslate();
+  return /* @__PURE__ */ jsxs("div", { className: "hidden lg:flex lg:flex-1 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900", children: [
+    /* @__PURE__ */ jsx("div", { className: "absolute inset-0 opacity-10", children: /* @__PURE__ */ jsx("div", { className: "absolute inset-0", style: {
+      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+    } }) }),
+    /* @__PURE__ */ jsxs("div", { className: "relative z-10 flex flex-col justify-between p-12 text-white", children: [
+      /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("div", { className: "flex items-center gap-3 mb-4", children: /* @__PURE__ */ jsx("span", { className: "text-2xl font-bold tracking-tight", children: title }) }) }),
+      /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsx("blockquote", { className: "text-xl font-medium leading-relaxed opacity-90", children: t("auth.brand.quote", '"Manage your content with elegance and simplicity."') }),
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4", children: [
+          /* @__PURE__ */ jsx("div", { className: "h-px flex-1 bg-white/20" }),
+          /* @__PURE__ */ jsx("span", { className: "text-sm opacity-70", children: tagline || t("auth.brand.tagline", "Your content, your way") }),
+          /* @__PURE__ */ jsx("div", { className: "h-px flex-1 bg-white/20" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "text-sm opacity-60", children: [
+        "All rights reserved \xA9 ",
+        (/* @__PURE__ */ new Date()).getFullYear()
+      ] })
+    ] })
+  ] });
+};
+var AuthFormContainer = ({ title, children }) => /* @__PURE__ */ jsx("div", { className: "flex flex-1 flex-col items-center justify-center bg-background p-6 sm:p-12", children: /* @__PURE__ */ jsxs("div", { className: "w-full max-w-md space-y-8 animate-scale-in", children: [
+  /* @__PURE__ */ jsxs("div", { className: "flex lg:hidden items-center justify-center gap-3 mb-8", children: [
+    /* @__PURE__ */ jsx("div", { className: "flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground", children: /* @__PURE__ */ jsx(BookOpen, { className: "h-5 w-5" }) }),
+    /* @__PURE__ */ jsx("span", { className: "text-xl font-bold", children: title })
+  ] }),
+  children
+] }) });
 var AuthView = ({
   mode,
   onSwitchMode,
-  onSuccess
+  onSuccess,
+  branding
 }) => {
   const t = useTranslate();
   const setupSchema = useMemo(() => buildSetupSchema(t), [t]);
@@ -2769,64 +3229,114 @@ var AuthView = ({
     }
   });
   if (mode === "setup") {
-    return /* @__PURE__ */ jsx("div", { className: "flex flex-1 items-center justify-center bg-muted/30 p-6", children: /* @__PURE__ */ jsxs(Card, { className: "w-full max-w-md", children: [
-      /* @__PURE__ */ jsxs(CardHeader, { children: [
-        /* @__PURE__ */ jsx(CardTitle, { children: t("auth.setup.title", "Create the first admin user") }),
-        /* @__PURE__ */ jsx(CardDescription, { children: t("auth.setup.subtitle", "Provide the initial administrator credentials.") })
-      ] }),
-      /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("form", { className: "space-y-4", onSubmit: handleSetupSubmit, children: [
-        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-          /* @__PURE__ */ jsx(Label2, { htmlFor: "setup-name", children: t("auth.setup.nameLabel", "Name") }),
-          /* @__PURE__ */ jsx(Input, { id: "setup-name", ...setupForm.register("name") }),
-          setupForm.formState.errors.name && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: setupForm.formState.errors.name.message })
+    return /* @__PURE__ */ jsxs("div", { className: "flex flex-1 min-h-screen", children: [
+      /* @__PURE__ */ jsx(AuthBrandPanel, { title: branding.title, tagline: branding.tagline }),
+      /* @__PURE__ */ jsxs(AuthFormContainer, { title: branding.title, children: [
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2 text-center lg:text-left", children: [
+          /* @__PURE__ */ jsx("h1", { className: "text-2xl font-bold tracking-tight", children: t("auth.setup.title", "Create the first admin user") }),
+          /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: t("auth.setup.subtitle", "Provide the initial administrator credentials.") })
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-          /* @__PURE__ */ jsx(Label2, { htmlFor: "setup-email", children: t("auth.setup.emailLabel", "Email") }),
-          /* @__PURE__ */ jsx(Input, { id: "setup-email", type: "email", ...setupForm.register("email") }),
-          setupForm.formState.errors.email && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: setupForm.formState.errors.email.message })
+        /* @__PURE__ */ jsxs("form", { className: "space-y-5", onSubmit: handleSetupSubmit, children: [
+          /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+            /* @__PURE__ */ jsx(Label2, { htmlFor: "setup-name", children: t("auth.setup.nameLabel", "Name") }),
+            /* @__PURE__ */ jsx(
+              Input,
+              {
+                id: "setup-name",
+                placeholder: t("auth.setup.namePlaceholder", "John Doe"),
+                ...setupForm.register("name")
+              }
+            ),
+            setupForm.formState.errors.name && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: setupForm.formState.errors.name.message })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+            /* @__PURE__ */ jsx(Label2, { htmlFor: "setup-email", children: t("auth.setup.emailLabel", "Email") }),
+            /* @__PURE__ */ jsx(
+              Input,
+              {
+                id: "setup-email",
+                type: "email",
+                placeholder: t("auth.setup.emailPlaceholder", "admin@example.com"),
+                ...setupForm.register("email")
+              }
+            ),
+            setupForm.formState.errors.email && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: setupForm.formState.errors.email.message })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+            /* @__PURE__ */ jsx(Label2, { htmlFor: "setup-password", children: t("auth.setup.passwordLabel", "Password") }),
+            /* @__PURE__ */ jsx(
+              Input,
+              {
+                id: "setup-password",
+                type: "password",
+                placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                ...setupForm.register("password")
+              }
+            ),
+            setupForm.formState.errors.password && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: setupForm.formState.errors.password.message })
+          ] }),
+          /* @__PURE__ */ jsx(Button, { type: "submit", size: "lg", className: "w-full", disabled: setupForm.formState.isSubmitting, children: setupForm.formState.isSubmitting ? /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }),
+            t("common.saving", "Saving...")
+          ] }) : t("auth.setup.submit", "Create user") })
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-          /* @__PURE__ */ jsx(Label2, { htmlFor: "setup-password", children: t("auth.setup.passwordLabel", "Password") }),
-          /* @__PURE__ */ jsx(Input, { id: "setup-password", type: "password", ...setupForm.register("password") }),
-          setupForm.formState.errors.password && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: setupForm.formState.errors.password.message })
-        ] }),
-        /* @__PURE__ */ jsx(Button, { type: "submit", className: "w-full", disabled: setupForm.formState.isSubmitting, children: setupForm.formState.isSubmitting ? t("common.saving", "Saving...") : t("auth.setup.submit", "Create user") })
-      ] }) }),
-      /* @__PURE__ */ jsx(CardFooter, { className: "justify-center", children: /* @__PURE__ */ jsx(Button, { variant: "link", onClick: () => onSwitchMode("login"), children: t("auth.setup.switchToLogin", "I already have a user") }) })
-    ] }) });
+        /* @__PURE__ */ jsx("div", { className: "text-center", children: /* @__PURE__ */ jsx(Button, { variant: "ghost", onClick: () => onSwitchMode("login"), children: t("auth.setup.switchToLogin", "I already have a user") }) })
+      ] })
+    ] });
   }
-  return /* @__PURE__ */ jsx("div", { className: "flex flex-1 items-center justify-center bg-muted/30 p-6", children: /* @__PURE__ */ jsxs(Card, { className: "w-full max-w-md", children: [
-    /* @__PURE__ */ jsxs(CardHeader, { children: [
-      /* @__PURE__ */ jsx(CardTitle, { children: t("auth.login.title", "Access the blog admin") }),
-      /* @__PURE__ */ jsx(CardDescription, { children: t("auth.login.subtitle", "Enter your credentials to manage the content.") })
-    ] }),
-    /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("form", { className: "space-y-4", onSubmit: handleLoginSubmit, children: [
-      /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-        /* @__PURE__ */ jsx(Label2, { htmlFor: "login-email", children: t("auth.login.emailLabel", "Email") }),
-        /* @__PURE__ */ jsx(Input, { id: "login-email", type: "email", ...loginForm.register("email") }),
-        loginForm.formState.errors.email && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: loginForm.formState.errors.email.message })
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-1 min-h-screen", children: [
+    /* @__PURE__ */ jsx(AuthBrandPanel, { title: branding.title, tagline: branding.tagline }),
+    /* @__PURE__ */ jsxs(AuthFormContainer, { title: branding.title, children: [
+      /* @__PURE__ */ jsxs("div", { className: "space-y-2 text-center lg:text-left", children: [
+        /* @__PURE__ */ jsx("h1", { className: "text-2xl font-bold tracking-tight", children: t("auth.login.title", "Welcome back") }),
+        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: t("auth.login.subtitle", "Enter your credentials to access the admin panel.") })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-        /* @__PURE__ */ jsx(Label2, { htmlFor: "login-password", children: t("auth.login.passwordLabel", "Password") }),
-        /* @__PURE__ */ jsx(Input, { id: "login-password", type: "password", ...loginForm.register("password") }),
-        loginForm.formState.errors.password && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: loginForm.formState.errors.password.message })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-2", children: [
-        /* @__PURE__ */ jsx(
-          "input",
-          {
-            id: "remember",
-            type: "checkbox",
-            className: "h-4 w-4 rounded border border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            ...loginForm.register("remember")
-          }
-        ),
-        /* @__PURE__ */ jsx(Label2, { htmlFor: "remember", className: "text-sm text-muted-foreground", children: t("auth.login.rememberMe", "Keep me signed in") })
-      ] }),
-      /* @__PURE__ */ jsx(Button, { type: "submit", className: "w-full", disabled: loginForm.formState.isSubmitting, children: loginForm.formState.isSubmitting ? t("auth.login.submitting", "Signing in...") : t("auth.login.submit", "Sign in") })
-    ] }) }),
-    /* @__PURE__ */ jsx(CardFooter, { className: "justify-center", children: /* @__PURE__ */ jsx(Button, { variant: "link", onClick: () => onSwitchMode("setup"), children: t("auth.login.switchToSetup", "Create first user") }) })
-  ] }) });
+      /* @__PURE__ */ jsxs("form", { className: "space-y-5", onSubmit: handleLoginSubmit, children: [
+        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+          /* @__PURE__ */ jsx(Label2, { htmlFor: "login-email", children: t("auth.login.emailLabel", "Email") }),
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              id: "login-email",
+              type: "email",
+              placeholder: t("auth.login.emailPlaceholder", "you@example.com"),
+              ...loginForm.register("email")
+            }
+          ),
+          loginForm.formState.errors.email && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: loginForm.formState.errors.email.message })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+          /* @__PURE__ */ jsx(Label2, { htmlFor: "login-password", children: t("auth.login.passwordLabel", "Password") }),
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              id: "login-password",
+              type: "password",
+              placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+              ...loginForm.register("password")
+            }
+          ),
+          loginForm.formState.errors.password && /* @__PURE__ */ jsx("p", { className: "text-sm text-destructive", children: loginForm.formState.errors.password.message })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-2", children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              id: "remember",
+              type: "checkbox",
+              className: "h-4 w-4 rounded border border-input bg-background text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 checked:bg-primary checked:border-primary",
+              ...loginForm.register("remember")
+            }
+          ),
+          /* @__PURE__ */ jsx(Label2, { htmlFor: "remember", className: "text-sm text-muted-foreground cursor-pointer", children: t("auth.login.rememberMe", "Keep me signed in") })
+        ] }),
+        /* @__PURE__ */ jsx(Button, { type: "submit", size: "lg", className: "w-full", disabled: loginForm.formState.isSubmitting, children: loginForm.formState.isSubmitting ? /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }),
+          t("auth.login.submitting", "Signing in...")
+        ] }) : t("auth.login.submit", "Sign in") })
+      ] })
+    ] })
+  ] });
 };
 var AdminShell = ({ branding }) => {
   const t = useTranslate();
@@ -2916,16 +3426,19 @@ var AdminShell = ({ branding }) => {
   );
   let content;
   if (authState === "loading") {
-    content = /* @__PURE__ */ jsx("div", { className: "flex min-h-screen items-center justify-center bg-muted/30", children: /* @__PURE__ */ jsx(Loader2, { className: "h-6 w-6 animate-spin text-muted-foreground" }) });
+    content = /* @__PURE__ */ jsx("div", { className: "flex min-h-screen items-center justify-center bg-gradient-subtle", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-4", children: [
+      /* @__PURE__ */ jsx("div", { className: "flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-brand shadow-lg", children: /* @__PURE__ */ jsx(BookOpen, { className: "h-6 w-6 text-white" }) }),
+      /* @__PURE__ */ jsx(Loader2, { className: "h-5 w-5 animate-spin text-primary" })
+    ] }) });
   } else if (authState === "setup" || authState === "login") {
-    content = /* @__PURE__ */ jsx(AuthView, { mode: authState, onSwitchMode: setAuthState, onSuccess: handleAuthSuccess });
+    content = /* @__PURE__ */ jsx(AuthView, { mode: authState, onSwitchMode: setAuthState, onSuccess: handleAuthSuccess, branding: resolvedBranding });
   } else {
     content = /* @__PURE__ */ jsx(AdminContext.Provider, { value: adminContextValue, children: /* @__PURE__ */ jsxs("div", { className: "flex min-h-screen bg-background text-foreground", children: [
       /* @__PURE__ */ jsx(Sidebar, { current: router.route, navigate: router.navigate, branding: resolvedBranding }),
       /* @__PURE__ */ jsxs("div", { className: "flex flex-1 flex-col", children: [
         /* @__PURE__ */ jsx(MobileNav, { current: router.route, navigate: router.navigate }),
         /* @__PURE__ */ jsx(Header, { title: resolveTitle(router.route), onLogout: handleLogout }),
-        /* @__PURE__ */ jsx("main", { className: "flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6 lg:p-8", children: /* @__PURE__ */ jsx(RouteView, { route: router.route, navigate: router.navigate }) })
+        /* @__PURE__ */ jsx("main", { className: "flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/30 p-4 md:p-6 lg:p-8", children: /* @__PURE__ */ jsx(RouteView, { route: router.route, navigate: router.navigate }) })
       ] })
     ] }) });
   }

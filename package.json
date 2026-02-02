@@ -55,7 +55,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "prebuild": "tailwindcss -c tailwind.config.ts -i src/admin/styles/app.css -o src/admin/styles/generated.css",
+    "prebuild": "npx @tailwindcss/cli -i src/admin/styles/app.css -o src/admin/styles/generated.css",
     "build": "tsup --config tsup.config.ts",
     "postbuild": "node scripts/postbuild.cjs",
     "dev": "tsup --config tsup.config.ts --watch",
@@ -74,6 +74,7 @@
     "sqlite"
   ],
   "dependencies": {
+    "@base-ui/react": "^1.1.0",
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -81,9 +82,9 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toast": "^1.1.5",
-    "@radix-ui/react-switch": "^1.0.3",
     "@tanstack/react-table": "^8.16.0",
     "@tiptap/extension-link": "^2.6.6",
     "@tiptap/extension-placeholder": "^2.6.6",
@@ -101,6 +102,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/bcrypt": "^5.0.2",
     "@types/better-sqlite3": "^7.6.8",
     "@types/jsonwebtoken": "^9.0.5",
@@ -115,7 +118,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.2",
-    "tailwindcss": "^3.4.15",
+    "tailwindcss": "^4.1.18",
     "tsup": "^8.1.0",
     "typescript": "^5.5.4",
     "vitest": "^1.6.0"

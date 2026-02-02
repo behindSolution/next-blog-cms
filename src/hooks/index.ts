@@ -183,7 +183,7 @@ export function usePost<TPost = BlogPost>(slug: string, options: UsePostOptions 
 
   return {
     post: data?.post ?? null,
-    loading: Boolean(url) ? loading : false,
+    loading: url ? loading : false,
     error
   };
 }

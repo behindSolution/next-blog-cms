@@ -105,7 +105,7 @@ function usePost(slug, options = {}) {
   const { data, error, loading } = useApiFetch(url);
   return {
     post: data?.post ?? null,
-    loading: Boolean(url) ? loading : false,
+    loading: url ? loading : false,
     error
   };
 }

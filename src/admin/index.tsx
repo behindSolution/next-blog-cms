@@ -2,7 +2,7 @@
 
 import './styles/generated.css';
 import AdminApp, { type AdminAppProps } from './App';
-import { I18nProvider, type TranslateFn, type TranslateParams } from './i18n';
+import { I18nProvider, type TranslateFn } from './i18n';
 
 export interface BlogAdminProps {
   locale?: string;

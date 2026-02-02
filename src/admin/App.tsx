@@ -9,7 +9,10 @@ import {
   Loader2,
   Plus,
   LogOut,
-  Wand2
+  Wand2,
+  BookOpen,
+  Filter,
+  type LucideIcon
 } from 'lucide-react';
 import {
   createContext,
@@ -40,6 +43,24 @@ import {
   TableRow
 } from './components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription
+} from './components/ui/sheet';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogPopup,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogPanel,
+  DialogFooter,
+  DialogClose
+} from './components/ui/dialog';
 import { Switch } from './components/ui/switch';
 import { Toaster } from './components/ui/toaster';
 import { toast } from './components/ui/use-toast';
@@ -122,11 +143,6 @@ interface AdminPost extends Post {
     }
   >;
 }
-
-type PostTranslationFields = Pick<
-  PostTranslation,
-  'title' | 'content' | 'excerpt' | 'metaTitle' | 'metaDescription'
->;
 
 interface AdminCategory {
   id: number;
@@ -578,11 +594,11 @@ const Sidebar = ({
     branding?.tagline?.trim() || t('nav.tagline', 'Multi-language content for Next.js');
 
   return (
-    <aside className="hidden w-64 flex-none border-r bg-card/40 shadow-sm lg:flex lg:flex-col">
-      <div className="flex h-16 items-center border-b px-6">
-        <div>
-          <p className="text-sm font-semibold">{brandTitle}</p>
-          <p className="text-xs text-muted-foreground">{brandTagline}</p>
+    <aside className="hidden w-64 flex-none border-r border-sidebar-border bg-sidebar shadow-sm lg:flex lg:flex-col">
+      <div className="flex h-20 items-center gap-3 border-b border-sidebar-border px-6">
+        <div className="flex-1 overflow-hidden">
+          <p className="truncate text-sm font-bold text-sidebar-foreground">{brandTitle}</p>
+          <p className="truncate text-xs text-muted-foreground">{brandTagline}</p>
         </div>
       </div>
       <nav className="flex-1 space-y-1 p-4">
@@ -590,19 +606,29 @@ const Sidebar = ({
           const Icon = item.icon;
           const isActive = current.type === item.route.type;
           return (
-            <Button
+            <button
               key={item.label}
-              variant={isActive ? 'secondary' : 'ghost'}
-              className={cn('w-full justify-start gap-2', isActive && 'font-semibold')}
+              type="button"
+              className={cn(
+                'relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
               onClick={() => navigate(item.path)}
             >
-              <Icon className="h-4 w-4" />
+              {isActive && (
+                <span className="absolute inset-y-0 left-0 my-auto h-6 w-1 rounded-r-full bg-primary" />
+              )}
+              <Icon className={cn('h-4 w-4', isActive && 'text-primary')} />
               {item.label}
-            </Button>
+            </button>
           );
         })}
       </nav>
-      <div className="border-t px-6 py-3 text-xs text-muted-foreground">next-blog-cms v0.1.2</div>
+      <div className="border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground">
+        next-blog-cms v0.1.2
+      </div>
     </aside>
   );
 };
@@ -612,21 +638,28 @@ const MobileNav = ({ current, navigate }: { current: Route; navigate: (path: str
   const navigationItems = useMemo(() => buildNavigationItems(t), [t]);
 
   return (
-    <nav className="flex items-center gap-2 border-b bg-card/60 p-2 lg:hidden">
+    <nav className="flex items-center gap-1 border-b bg-sidebar p-2 lg:hidden">
       {navigationItems.map((item) => {
         const Icon = item.icon;
         const isActive = current.type === item.route.type;
         return (
-          <Button
+          <button
             key={item.label}
-            variant={isActive ? 'secondary' : 'ghost'}
-            size="icon"
-            className={cn('h-10 w-10', isActive && 'bg-secondary font-semibold')}
+            type="button"
+            className={cn(
+              'relative flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            )}
             onClick={() => navigate(item.path)}
           >
+            {isActive && (
+              <span className="absolute bottom-0 left-1/2 h-1 w-6 -translate-x-1/2 rounded-t-full bg-primary" />
+            )}
             <Icon className="h-4 w-4" />
             <span className="sr-only">{item.label}</span>
-          </Button>
+          </button>
         );
       })}
     </nav>
@@ -638,22 +671,32 @@ const Header = ({ title, onLogout }: { title: string; onLogout: () => void }) =>
     state: { user }
   } = useContext(AdminContext);
   const t = useTranslate();
+  const userInitial = (user?.name?.[0] ?? 'U').toUpperCase();
 
   return (
-    <div className="flex h-16 items-center justify-between border-b bg-card/60 px-4 py-3 md:px-6">
+    <div className="flex h-16 items-center justify-between border-b bg-card/80 px-4 py-3 backdrop-blur-sm md:px-6">
       <div>
         <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
         <p className="text-sm text-muted-foreground">
           {t('header.subtitle', 'Manage your blog content with ease')}
         </p>
       </div>
-      <div className="flex items-center gap-2">
-        <div className="hidden items-center gap-2 rounded-full border px-3 py-1 text-sm text-muted-foreground sm:flex">
+      <div className="flex items-center gap-3">
+        <div className="hidden items-center gap-2.5 rounded-full border bg-background/50 px-3 py-1.5 text-sm shadow-sm sm:flex">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-brand text-xs font-bold text-white">
+            {userInitial}
+          </div>
           <span className="font-medium text-foreground">{user?.name ?? t('header.userDefaultName', 'User')}</span>
-          <span className="text-xs uppercase">{user?.role}</span>
+          <Badge variant="secondary" className="text-[10px] uppercase">
+            {user?.role}
+          </Badge>
         </div>
         <ThemeToggle />
-        <Button variant="outline" onClick={onLogout} className="gap-2">
+        <Button
+          variant="outline"
+          onClick={onLogout}
+          className="gap-2 transition-colors hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
+        >
           <LogOut className="h-4 w-4" />
           <span className="hidden sm:inline">{t('header.signOut', 'Sign out')}</span>
         </Button>
@@ -662,11 +705,27 @@ const Header = ({ title, onLogout }: { title: string; onLogout: () => void }) =>
   );
 };
 
-const StatsCard = ({ title, value }: { title: string; value: string | number }) => (
-  <Card>
+interface StatsCardProps {
+  title: string;
+  value: string | number;
+  icon?: LucideIcon;
+  colorClass?: string;
+}
+
+const StatsCard = ({ title, value, icon: Icon, colorClass = 'bg-accent-blue' }: StatsCardProps) => (
+  <Card className="overflow-hidden">
     <CardHeader className="pb-2">
-      <CardDescription>{title}</CardDescription>
-      <CardTitle className="text-3xl font-semibold tracking-tight">{value}</CardTitle>
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <CardDescription>{title}</CardDescription>
+          <CardTitle className="text-3xl font-bold tracking-tight">{value}</CardTitle>
+        </div>
+        {Icon && (
+          <div className={cn('rounded-xl p-2.5 shadow-sm', colorClass)}>
+            <Icon className="h-5 w-5 text-white" />
+          </div>
+        )}
+      </div>
     </CardHeader>
   </Card>
 );
@@ -704,10 +763,30 @@ const DashboardView = ({ navigate }: { navigate: (path: string) => void }) => {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatsCard title={t('dashboard.stats.published', 'Published posts')} value={publishedCount} />
-        <StatsCard title={t('dashboard.stats.drafts', 'Drafts')} value={posts.length - publishedCount} />
-        <StatsCard title={t('dashboard.stats.categories', 'Categories')} value={categories.length} />
-        <StatsCard title={t('dashboard.stats.users', 'Users')} value={users.length} />
+        <StatsCard
+          title={t('dashboard.stats.published', 'Published posts')}
+          value={publishedCount}
+          icon={FileText}
+          colorClass="bg-accent-blue"
+        />
+        <StatsCard
+          title={t('dashboard.stats.drafts', 'Drafts')}
+          value={posts.length - publishedCount}
+          icon={FileText}
+          colorClass="bg-accent-amber"
+        />
+        <StatsCard
+          title={t('dashboard.stats.categories', 'Categories')}
+          value={categories.length}
+          icon={FolderTree}
+          colorClass="bg-accent-green"
+        />
+        <StatsCard
+          title={t('dashboard.stats.users', 'Users')}
+          value={users.length}
+          icon={UsersRound}
+          colorClass="bg-accent-purple"
+        />
       </div>
 
       <Card>
@@ -738,7 +817,7 @@ const DashboardView = ({ navigate }: { navigate: (path: string) => void }) => {
                 <TableRow key={post.id} className="cursor-pointer" onClick={() => navigate(`/posts/${post.id}`)}>
                   <TableCell className="font-medium">{post.translations[0]?.title ?? post.slug}</TableCell>
                   <TableCell>
-                    <Badge variant={post.status === 'published' ? 'default' : 'secondary'}>
+                    <Badge variant={post.status === 'published' ? 'success' : 'warning'}>
                       {post.status === 'published'
                         ? t('common.status.published', 'Published')
                         : t('common.status.draft', 'Draft')}
@@ -785,7 +864,9 @@ const PostListView = ({ navigate }: { navigate: (path: string) => void }) => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<AdminPost[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const filterButtons = useMemo(() => buildPostFilterButtons(t), [t]);
+  const activeFilterCount = statusFilter !== 'all' ? 1 : 0;
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -836,7 +917,7 @@ const PostListView = ({ navigate }: { navigate: (path: string) => void }) => {
         id: 'status',
         header: t('posts.table.status', 'Status'),
         cell: ({ row }) => (
-          <Badge variant={row.original.status === 'published' ? 'default' : 'secondary'}>
+          <Badge variant={row.original.status === 'published' ? 'success' : 'warning'}>
             {row.original.status === 'published'
               ? t('common.status.published', 'Published')
               : t('common.status.draft', 'Draft')}
@@ -873,21 +954,99 @@ const PostListView = ({ navigate }: { navigate: (path: string) => void }) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex gap-2">
-          {filterButtons.map((filter) => (
-            <Button
-              key={filter.value}
-              variant={statusFilter === filter.value ? 'default' : 'outline'}
-              onClick={() => setStatusFilter(filter.value)}
-            >
-              {filter.label}
-            </Button>
-          ))}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setFilterOpen(true)}
+            className="gap-2"
+          >
+            <Filter className="h-4 w-4" />
+            {t('posts.filters.button', 'Filters')}
+            {activeFilterCount > 0 && (
+              <Badge variant="default" className="ml-1 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px]">
+                {activeFilterCount}
+              </Badge>
+            )}
+          </Button>
+          <div className="hidden gap-2 sm:flex">
+            {filterButtons.map((filter) => (
+              <Button
+                key={filter.value}
+                variant={statusFilter === filter.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter(filter.value)}
+              >
+                {filter.label}
+              </Button>
+            ))}
+          </div>
         </div>
         <Button onClick={() => navigate('/posts/new')} className="gap-2">
           <Plus className="h-4 w-4" /> {t('posts.actions.new', 'New post')}
         </Button>
       </div>
+
+      <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+        <SheetContent side="right" className="w-80">
+          <SheetHeader>
+            <SheetTitle>{t('posts.filters.title', 'Filter Posts')}</SheetTitle>
+            <SheetDescription>
+              {t('posts.filters.description', 'Refine the posts list by status.')}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">{t('posts.filters.statusLabel', 'Status')}</Label>
+              <div className="flex flex-col gap-2">
+                {filterButtons.map((filter) => (
+                  <button
+                    key={filter.value}
+                    type="button"
+                    className={cn(
+                      'flex items-center gap-3 rounded-lg border px-4 py-3 text-sm transition-all duration-200',
+                      statusFilter === filter.value
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border bg-background hover:bg-muted'
+                    )}
+                    onClick={() => {
+                      setStatusFilter(filter.value);
+                      setFilterOpen(false);
+                    }}
+                  >
+                    <div
+                      className={cn(
+                        'h-4 w-4 rounded-full border-2',
+                        statusFilter === filter.value
+                          ? 'border-primary bg-primary'
+                          : 'border-muted-foreground/50'
+                      )}
+                    >
+                      {statusFilter === filter.value && (
+                        <div className="flex h-full items-center justify-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                        </div>
+                      )}
+                    </div>
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {statusFilter !== 'all' && (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  setStatusFilter('all');
+                  setFilterOpen(false);
+                }}
+              >
+                {t('posts.filters.clearAll', 'Clear all filters')}
+              </Button>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <DataTable columns={columns} data={posts} />
     </div>
@@ -1065,6 +1224,7 @@ const PostFormView = ({ postId, navigate }: { postId?: number; navigate: (path: 
           (fieldKey) => {
             const fieldValue = translation[fieldKey];
             if (typeof fieldValue === 'string') {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               form.setValue(`translations.${languageCode}.${fieldKey}` as any, fieldValue, {
                 shouldDirty: true,
                 shouldValidate: false
@@ -1180,7 +1340,7 @@ const PostFormView = ({ postId, navigate }: { postId?: number; navigate: (path: 
             <Label htmlFor="post-status">{t('posts.form.statusLabel', 'Status')}</Label>
             <select
               id="post-status"
-              className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all duration-200 hover:border-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0"
               {...form.register('status')}
             >
               <option value="draft">{t('common.status.draft', 'Draft')}</option>
@@ -1191,7 +1351,7 @@ const PostFormView = ({ postId, navigate }: { postId?: number; navigate: (path: 
             <Label htmlFor="post-category">{t('posts.form.categoryLabel', 'Category')}</Label>
             <select
               id="post-category"
-              className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all duration-200 hover:border-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0"
               {...form.register('categoryId')}
             >
               <option value="">{t('posts.form.categoryNone', 'No category')}</option>
@@ -1952,7 +2112,7 @@ const UserFormView = ({ userId, navigate }: { userId?: number; navigate: (path: 
             <Label htmlFor="user-role">{t('users.form.roleLabel', 'Role')}</Label>
             <select
               id="user-role"
-              className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all duration-200 hover:border-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0"
               {...form.register('role')}
             >
               <option value="admin">{t('users.roles.admin', 'Admin')}</option>
@@ -1990,6 +2150,7 @@ const LanguagesView = ({ refreshLanguages }: { refreshLanguages: () => Promise<v
   const t = useTranslate();
   const [form, setForm] = useState({ code: '', name: '' });
   const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -2008,6 +2169,7 @@ const LanguagesView = ({ refreshLanguages }: { refreshLanguages: () => Promise<v
       await upsertLanguage({ code: form.code.toLowerCase(), name: form.name });
       notify(t('languages.form.saveSuccess', 'Language saved successfully'), 'default');
       setForm({ code: '', name: '' });
+      setDialogOpen(false);
       await refreshLanguages();
     } catch (error) {
       if (error instanceof ApiError) {
@@ -2070,24 +2232,28 @@ const LanguagesView = ({ refreshLanguages }: { refreshLanguages: () => Promise<v
       {
         accessorKey: 'code',
         header: t('languages.table.code', 'Code'),
-        cell: ({ row }) => <span className="font-medium uppercase">{row.original.code}</span>
-      },
-      {
-        accessorKey: 'name',
-        header: t('languages.table.name', 'Name')
+        cell: ({ row }) => (
+          <span className="inline-flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold uppercase text-primary">
+              {row.original.code}
+            </span>
+            <span className="font-medium">{row.original.name}</span>
+          </span>
+        )
       },
       {
         id: 'isDefault',
         header: t('languages.table.default', 'Default'),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Badge variant={row.original.isDefault ? 'default' : 'secondary'}>
-              {row.original.isDefault
-                ? t('languages.badges.default', 'Default')
-                : t('languages.badges.alternative', 'Alternative')}
-            </Badge>
-            {!row.original.isDefault && (
-              <Button variant="ghost" size="sm" onClick={() => handleToggle(row.original, 'isDefault')}>
+            {row.original.isDefault ? (
+              <Badge variant="default">{t('languages.badges.default', 'Default')}</Badge>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleToggle(row.original, 'isDefault')}
+              >
                 {t('languages.actions.setDefault', 'Set as default')}
               </Button>
             )}
@@ -2099,7 +2265,10 @@ const LanguagesView = ({ refreshLanguages }: { refreshLanguages: () => Promise<v
         id: 'enabled',
         header: t('languages.table.enabled', 'Enabled'),
         cell: ({ row }) => (
-          <Switch checked={row.original.enabled} onCheckedChange={() => handleToggle(row.original, 'enabled')} />
+          <Switch
+            checked={row.original.enabled}
+            onCheckedChange={() => handleToggle(row.original, 'enabled')}
+          />
         ),
         enableSorting: false
       },
@@ -2109,7 +2278,7 @@ const LanguagesView = ({ refreshLanguages }: { refreshLanguages: () => Promise<v
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Button
-              variant="destructive"
+              variant="destructive-outline"
               size="sm"
               onClick={() => handleDelete(row.original.code)}
               disabled={row.original.isDefault}
@@ -2127,42 +2296,75 @@ const LanguagesView = ({ refreshLanguages }: { refreshLanguages: () => Promise<v
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>{t('languages.form.title', 'Add language')}</CardTitle>
-          <CardDescription>
-            {t('languages.form.description', 'Choose which translations are available in the admin.')}
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>{t('languages.title', 'Languages')}</CardTitle>
+            <CardDescription>
+              {t('languages.description', 'Manage available languages for your blog content.')}
+            </CardDescription>
+          </div>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                {t('languages.actions.add', 'Add Language')}
+              </Button>
+            </DialogTrigger>
+            <DialogPopup className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{t('languages.form.title', 'Add new language')}</DialogTitle>
+                <DialogDescription>
+                  {t('languages.form.description', 'Enter the language code and display name.')}
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit}>
+                <DialogPanel className="grid gap-4 py-4">
+                  <div className={fieldClass}>
+                    <Label htmlFor="language-code">
+                      {t('languages.form.codeLabel', 'Language code')}
+                    </Label>
+                    <Input
+                      id="language-code"
+                      placeholder="pt, en, es..."
+                      value={form.code}
+                      onChange={(event) =>
+                        setForm((prev) => ({ ...prev, code: event.target.value }))
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t('languages.form.codeHint', 'Use ISO 639-1 codes (2-5 letters)')}
+                    </p>
+                  </div>
+                  <div className={fieldClass}>
+                    <Label htmlFor="language-name">{t('languages.form.nameLabel', 'Display name')}</Label>
+                    <Input
+                      id="language-name"
+                      placeholder="Português, English..."
+                      value={form.name}
+                      onChange={(event) =>
+                        setForm((prev) => ({ ...prev, name: event.target.value }))
+                      }
+                    />
+                  </div>
+                </DialogPanel>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">
+                      {t('common.cancel', 'Cancel')}
+                    </Button>
+                  </DialogClose>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? t('common.saving', 'Saving...') : t('languages.form.addAction', 'Add language')}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogPopup>
+          </Dialog>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-[200px,1fr,120px]">
-            <div className={fieldClass}>
-              <Label htmlFor="language-code">
-                {t('languages.form.codeLabel', 'Code (e.g., pt, en)')}
-              </Label>
-              <Input
-                id="language-code"
-                value={form.code}
-                onChange={(event) => setForm((prev) => ({ ...prev, code: event.target.value }))}
-              />
-            </div>
-            <div className={fieldClass}>
-              <Label htmlFor="language-name">{t('languages.form.nameLabel', 'Name')}</Label>
-              <Input
-                id="language-name"
-                value={form.name}
-                onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
-              />
-            </div>
-            <div className="flex items-end">
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? t('common.saving', 'Saving...') : t('languages.form.addAction', 'Add')}
-              </Button>
-            </div>
-          </form>
+          <DataTable columns={columns} data={languages} />
         </CardContent>
       </Card>
-
-      <DataTable columns={columns} data={languages} />
     </div>
   );
 };
@@ -2198,14 +2400,68 @@ const RouteView = ({ route, navigate }: { route: Route; navigate: (path: string)
   }
 };
 
+// Branded left panel component - uses fixed dark theme for consistent contrast
+const AuthBrandPanel = ({ title, tagline }: { title: string; tagline?: string }) => {
+  const t = useTranslate();
+  return (
+    <div className="hidden lg:flex lg:flex-1 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col justify-between p-12 text-white">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-2xl font-bold tracking-tight">{title}</span>
+          </div>
+        </div>
+        <div className="space-y-6">
+          <blockquote className="text-xl font-medium leading-relaxed opacity-90">
+            {t('auth.brand.quote', '"Manage your content with elegance and simplicity."')}
+          </blockquote>
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-white/20" />
+            <span className="text-sm opacity-70">{tagline || t('auth.brand.tagline', 'Your content, your way')}</span>
+            <div className="h-px flex-1 bg-white/20" />
+          </div>
+        </div>
+        <div className="text-sm opacity-60">
+          All rights reserved &copy; {new Date().getFullYear()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Form container wrapper for auth screens
+const AuthFormContainer = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="flex flex-1 flex-col items-center justify-center bg-background p-6 sm:p-12">
+    <div className="w-full max-w-md space-y-8 animate-scale-in">
+      {/* Mobile logo */}
+      <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <BookOpen className="h-5 w-5" />
+        </div>
+        <span className="text-xl font-bold">{title}</span>
+      </div>
+      {children}
+    </div>
+  </div>
+);
+
 const AuthView = ({
   mode,
   onSwitchMode,
-  onSuccess
+  onSuccess,
+  branding
 }: {
   mode: 'login' | 'setup';
   onSwitchMode: (mode: 'login' | 'setup') => void;
   onSuccess: (user: AdminUser) => void;
+  branding: { title: string; tagline?: string };
 }) => {
   const t = useTranslate();
   const setupSchema = useMemo(() => buildSetupSchema(t), [t]);
@@ -2261,103 +2517,134 @@ const AuthView = ({
 
   if (mode === 'setup') {
     return (
-      <div className="flex flex-1 items-center justify-center bg-muted/30 p-6">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>{t('auth.setup.title', 'Create the first admin user')}</CardTitle>
-            <CardDescription>
+      <div className="flex flex-1 min-h-screen">
+        <AuthBrandPanel title={branding.title} tagline={branding.tagline} />
+        <AuthFormContainer title={branding.title}>
+          <div className="space-y-2 text-center lg:text-left">
+            <h1 className="text-2xl font-bold tracking-tight">
+              {t('auth.setup.title', 'Create the first admin user')}
+            </h1>
+            <p className="text-muted-foreground">
               {t('auth.setup.subtitle', 'Provide the initial administrator credentials.')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-4" onSubmit={handleSetupSubmit}>
-              <div className={fieldClass}>
-                <Label htmlFor="setup-name">{t('auth.setup.nameLabel', 'Name')}</Label>
-                <Input id="setup-name" {...setupForm.register('name')} />
-                {setupForm.formState.errors.name && (
-                  <p className="text-sm text-destructive">{setupForm.formState.errors.name.message}</p>
-                )}
-              </div>
-              <div className={fieldClass}>
-                <Label htmlFor="setup-email">{t('auth.setup.emailLabel', 'Email')}</Label>
-                <Input id="setup-email" type="email" {...setupForm.register('email')} />
-                {setupForm.formState.errors.email && (
-                  <p className="text-sm text-destructive">{setupForm.formState.errors.email.message}</p>
-                )}
-              </div>
-              <div className={fieldClass}>
-                <Label htmlFor="setup-password">{t('auth.setup.passwordLabel', 'Password')}</Label>
-                <Input id="setup-password" type="password" {...setupForm.register('password')} />
-                {setupForm.formState.errors.password && (
-                  <p className="text-sm text-destructive">{setupForm.formState.errors.password.message}</p>
-                )}
-              </div>
-              <Button type="submit" className="w-full" disabled={setupForm.formState.isSubmitting}>
-                {setupForm.formState.isSubmitting
-                  ? t('common.saving', 'Saving...')
-                  : t('auth.setup.submit', 'Create user')}
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter className="justify-center">
-            <Button variant="link" onClick={() => onSwitchMode('login')}>
+            </p>
+          </div>
+          <form className="space-y-5" onSubmit={handleSetupSubmit}>
+            <div className={fieldClass}>
+              <Label htmlFor="setup-name">{t('auth.setup.nameLabel', 'Name')}</Label>
+              <Input
+                id="setup-name"
+                placeholder={t('auth.setup.namePlaceholder', 'John Doe')}
+                {...setupForm.register('name')}
+              />
+              {setupForm.formState.errors.name && (
+                <p className="text-sm text-destructive">{setupForm.formState.errors.name.message}</p>
+              )}
+            </div>
+            <div className={fieldClass}>
+              <Label htmlFor="setup-email">{t('auth.setup.emailLabel', 'Email')}</Label>
+              <Input
+                id="setup-email"
+                type="email"
+                placeholder={t('auth.setup.emailPlaceholder', 'admin@example.com')}
+                {...setupForm.register('email')}
+              />
+              {setupForm.formState.errors.email && (
+                <p className="text-sm text-destructive">{setupForm.formState.errors.email.message}</p>
+              )}
+            </div>
+            <div className={fieldClass}>
+              <Label htmlFor="setup-password">{t('auth.setup.passwordLabel', 'Password')}</Label>
+              <Input
+                id="setup-password"
+                type="password"
+                placeholder="••••••••"
+                {...setupForm.register('password')}
+              />
+              {setupForm.formState.errors.password && (
+                <p className="text-sm text-destructive">{setupForm.formState.errors.password.message}</p>
+              )}
+            </div>
+            <Button type="submit" size="lg" className="w-full" disabled={setupForm.formState.isSubmitting}>
+              {setupForm.formState.isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t('common.saving', 'Saving...')}
+                </>
+              ) : (
+                t('auth.setup.submit', 'Create user')
+              )}
+            </Button>
+          </form>
+          <div className="text-center">
+            <Button variant="ghost" onClick={() => onSwitchMode('login')}>
               {t('auth.setup.switchToLogin', 'I already have a user')}
             </Button>
-          </CardFooter>
-        </Card>
+          </div>
+        </AuthFormContainer>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-muted/30 p-6">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>{t('auth.login.title', 'Access the blog admin')}</CardTitle>
-          <CardDescription>
-            {t('auth.login.subtitle', 'Enter your credentials to manage the content.')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4" onSubmit={handleLoginSubmit}>
-            <div className={fieldClass}>
-              <Label htmlFor="login-email">{t('auth.login.emailLabel', 'Email')}</Label>
-              <Input id="login-email" type="email" {...loginForm.register('email')} />
-              {loginForm.formState.errors.email && (
-                <p className="text-sm text-destructive">{loginForm.formState.errors.email.message}</p>
-              )}
-            </div>
-            <div className={fieldClass}>
-              <Label htmlFor="login-password">{t('auth.login.passwordLabel', 'Password')}</Label>
-              <Input id="login-password" type="password" {...loginForm.register('password')} />
-              {loginForm.formState.errors.password && (
-                <p className="text-sm text-destructive">{loginForm.formState.errors.password.message}</p>
-              )}
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                id="remember"
-                type="checkbox"
-                className="h-4 w-4 rounded border border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                {...loginForm.register('remember')}
-              />
-              <Label htmlFor="remember" className="text-sm text-muted-foreground">
-                {t('auth.login.rememberMe', 'Keep me signed in')}
-              </Label>
-            </div>
-            <Button type="submit" className="w-full" disabled={loginForm.formState.isSubmitting}>
-              {loginForm.formState.isSubmitting
-                ? t('auth.login.submitting', 'Signing in...')
-                : t('auth.login.submit', 'Sign in')}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <Button variant="link" onClick={() => onSwitchMode('setup')}>
-            {t('auth.login.switchToSetup', 'Create first user')}
+    <div className="flex flex-1 min-h-screen">
+      <AuthBrandPanel title={branding.title} tagline={branding.tagline} />
+      <AuthFormContainer title={branding.title}>
+        <div className="space-y-2 text-center lg:text-left">
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t('auth.login.title', 'Welcome back')}
+          </h1>
+          <p className="text-muted-foreground">
+            {t('auth.login.subtitle', 'Enter your credentials to access the admin panel.')}
+          </p>
+        </div>
+        <form className="space-y-5" onSubmit={handleLoginSubmit}>
+          <div className={fieldClass}>
+            <Label htmlFor="login-email">{t('auth.login.emailLabel', 'Email')}</Label>
+            <Input
+              id="login-email"
+              type="email"
+              placeholder={t('auth.login.emailPlaceholder', 'you@example.com')}
+              {...loginForm.register('email')}
+            />
+            {loginForm.formState.errors.email && (
+              <p className="text-sm text-destructive">{loginForm.formState.errors.email.message}</p>
+            )}
+          </div>
+          <div className={fieldClass}>
+            <Label htmlFor="login-password">{t('auth.login.passwordLabel', 'Password')}</Label>
+            <Input
+              id="login-password"
+              type="password"
+              placeholder="••••••••"
+              {...loginForm.register('password')}
+            />
+            {loginForm.formState.errors.password && (
+              <p className="text-sm text-destructive">{loginForm.formState.errors.password.message}</p>
+            )}
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              id="remember"
+              type="checkbox"
+              className="h-4 w-4 rounded border border-input bg-background text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 checked:bg-primary checked:border-primary"
+              {...loginForm.register('remember')}
+            />
+            <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
+              {t('auth.login.rememberMe', 'Keep me signed in')}
+            </Label>
+          </div>
+          <Button type="submit" size="lg" className="w-full" disabled={loginForm.formState.isSubmitting}>
+            {loginForm.formState.isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {t('auth.login.submitting', 'Signing in...')}
+              </>
+            ) : (
+              t('auth.login.submit', 'Sign in')
+            )}
           </Button>
-        </CardFooter>
-      </Card>
+        </form>
+      </AuthFormContainer>
     </div>
   );
 };
@@ -2460,12 +2747,17 @@ const AdminShell = ({ branding }: { branding?: AdminBranding }) => {
 
   if (authState === 'loading') {
     content = (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="flex min-h-screen items-center justify-center bg-gradient-subtle">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-brand shadow-lg">
+            <BookOpen className="h-6 w-6 text-white" />
+          </div>
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        </div>
       </div>
     );
   } else if (authState === 'setup' || authState === 'login') {
-    content = <AuthView mode={authState} onSwitchMode={setAuthState} onSuccess={handleAuthSuccess} />;
+    content = <AuthView mode={authState} onSwitchMode={setAuthState} onSuccess={handleAuthSuccess} branding={resolvedBranding} />;
   } else {
     content = (
       <AdminContext.Provider value={adminContextValue}>
@@ -2474,7 +2766,7 @@ const AdminShell = ({ branding }: { branding?: AdminBranding }) => {
           <div className="flex flex-1 flex-col">
             <MobileNav current={router.route} navigate={router.navigate} />
             <Header title={resolveTitle(router.route)} onLogout={handleLogout} />
-            <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6 lg:p-8">
+            <main className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/30 p-4 md:p-6 lg:p-8">
               <RouteView route={router.route} navigate={router.navigate} />
             </main>
           </div>

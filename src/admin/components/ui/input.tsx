@@ -1,22 +1,54 @@
-import * as React from 'react';
+'use client';
 
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+const inputVariants = cva(
+  'flex w-full border border-input bg-background text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      size: {
+        sm: 'h-8 rounded-md px-2.5 text-xs',
+        default: 'h-9 rounded-lg px-3',
+        lg: 'h-10 rounded-lg px-4',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  }
+);
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => {
-  return (
-    <input
-      type={type}
-      className={cn(
-        'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-        className
-      )}
-      ref={ref}
-      {...props}
-    />
-  );
-});
+export interface InputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
+    VariantProps<typeof inputVariants> {
+  unstyled?: boolean;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, size, unstyled, ...props }, ref) => {
+    if (unstyled) {
+      return (
+        <input
+          type={type}
+          className={className}
+          ref={ref}
+          {...props}
+        />
+      );
+    }
+
+    return (
+      <input
+        type={type}
+        className={cn(inputVariants({ size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
 Input.displayName = 'Input';
 
-export { Input };
+export { Input, inputVariants };

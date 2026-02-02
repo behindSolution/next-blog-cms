@@ -359,31 +359,36 @@ function applyConfigurationOverrides(db5) {
 }
 function synchronizeLanguages(db5) {
   const config = getBlogConfig();
-  const languages = Array.from(
+  const configuredLanguages = Array.from(
     /* @__PURE__ */ new Set([
       config.languages.default,
       ...config.languages.available
     ])
   );
-  if (languages.length === 0) {
+  if (configuredLanguages.length === 0) {
     return;
   }
-  db5.prepare("UPDATE languages SET enabled = 0, is_default = 0").run();
+  const existingLanguages = db5.prepare("SELECT code, enabled, is_default FROM languages").all();
+  db5.prepare("UPDATE languages SET is_default = 0").run();
   const upsert = db5.prepare(
     `INSERT INTO languages (code, name, is_default, enabled)
      VALUES (@code, @name, @is_default, @enabled)
      ON CONFLICT(code) DO UPDATE SET
-       name = excluded.name,
-       enabled = excluded.enabled,
-       is_default = excluded.is_default`
+       name = COALESCE(excluded.name, languages.name),
+       is_default = excluded.is_default,
+       enabled = CASE
+         WHEN languages.enabled = 1 THEN 1
+         ELSE excluded.enabled
+       END`
   );
-  for (const code of languages) {
+  for (const code of configuredLanguages) {
     const normalizedCode = code.trim();
     if (!normalizedCode) {
       continue;
     }
     const isDefault = normalizedCode === config.languages.default;
-    const isEnabled = config.languages.available.includes(normalizedCode) || isDefault;
+    const existing = existingLanguages.find((l) => l.code === normalizedCode);
+    const isEnabled = existing ? Boolean(existing.enabled) : true;
     upsert.run({
       code: normalizedCode,
       name: resolveLanguageName(normalizedCode),
