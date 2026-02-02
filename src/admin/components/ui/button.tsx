@@ -10,17 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:ring-primary',
+          'bg-primary text-primary-foreground shadow-sm hover:opacity-90 focus-visible:ring-primary',
         destructive:
-          'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 focus-visible:ring-destructive',
+          'bg-destructive text-destructive-foreground shadow-sm hover:opacity-90 focus-visible:ring-destructive',
         'destructive-outline':
-          'border border-destructive/50 text-destructive bg-transparent hover:bg-destructive/10 focus-visible:ring-destructive',
+          'border border-destructive text-destructive bg-transparent hover:bg-destructive hover:text-destructive-foreground focus-visible:ring-destructive',
         outline:
-          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring',
+          'border border-input bg-background shadow-sm hover:bg-muted hover:text-foreground focus-visible:ring-ring',
         secondary:
-          'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 focus-visible:ring-secondary',
+          'bg-secondary text-secondary-foreground shadow-sm hover:opacity-80 focus-visible:ring-secondary',
         ghost:
-          'hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring',
+          'hover:bg-muted hover:text-foreground focus-visible:ring-ring',
         link: 'text-primary underline-offset-4 hover:underline focus-visible:ring-primary',
       },
       size: {
