@@ -1621,6 +1621,17 @@ function buildPostFormSchema(t) {
     publishedAt: datetimeSchema
   });
 }
+function resolveDefaultLanguageCode(languages) {
+  const enabled = languages.filter((l) => l.enabled);
+  return (enabled.find((l) => l.isDefault) ?? enabled[0] ?? languages[0])?.code;
+}
+function resolveTranslation(translations, defaultLang) {
+  if (defaultLang) {
+    const match = translations.find((t) => t.language === defaultLang);
+    if (match) return match;
+  }
+  return translations[0];
+}
 function generateSlug(input) {
   return input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
@@ -1687,7 +1698,7 @@ var Sidebar = ({
         item.label
       );
     }) }),
-    /* @__PURE__ */ jsx("div", { className: "border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground", children: "next-blog-cms v0.1.2" })
+    /* @__PURE__ */ jsx("div", { className: "border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground", children: "next-blog-cms" })
   ] });
 };
 var MobileNav = ({ current, navigate }) => {
@@ -1756,7 +1767,11 @@ var StatsCard = ({ title, value, icon: Icon, colorClass = "bg-accent-blue" }) =>
   Icon && /* @__PURE__ */ jsx("div", { className: cn("rounded-xl p-2.5 shadow-sm", colorClass), children: /* @__PURE__ */ jsx(Icon, { className: "h-5 w-5 text-white" }) })
 ] }) }) });
 var DashboardView = ({ navigate }) => {
+  const {
+    state: { languages }
+  } = useContext(AdminContext);
   const t = useTranslate();
+  const defaultLang = useMemo(() => resolveDefaultLanguageCode(languages), [languages]);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -1836,7 +1851,7 @@ var DashboardView = ({ navigate }) => {
         ] }) }),
         /* @__PURE__ */ jsxs(TableBody, { children: [
           posts.slice(0, 5).map((post) => /* @__PURE__ */ jsxs(TableRow, { className: "cursor-pointer", onClick: () => navigate(`/posts/${post.id}`), children: [
-            /* @__PURE__ */ jsx(TableCell, { className: "font-medium", children: post.translations[0]?.title ?? post.slug }),
+            /* @__PURE__ */ jsx(TableCell, { className: "font-medium", children: resolveTranslation(post.translations, defaultLang)?.title ?? post.slug }),
             /* @__PURE__ */ jsx(TableCell, { children: /* @__PURE__ */ jsx(Badge, { variant: post.status === "published" ? "success" : "warning", children: post.status === "published" ? t("common.status.published", "Published") : t("common.status.draft", "Draft") }) }),
             /* @__PURE__ */ jsx(TableCell, { children: formatDate(post.updatedAt) })
           ] }, post.id)),
@@ -1847,7 +1862,11 @@ var DashboardView = ({ navigate }) => {
   ] });
 };
 var PostListView = ({ navigate }) => {
+  const {
+    state: { languages }
+  } = useContext(AdminContext);
   const t = useTranslate();
+  const defaultLang = useMemo(() => resolveDefaultLanguageCode(languages), [languages]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -1886,7 +1905,7 @@ var PostListView = ({ navigate }) => {
       {
         accessorKey: "title",
         header: t("posts.table.title", "Title"),
-        cell: ({ row }) => /* @__PURE__ */ jsx("div", { className: "font-medium", children: row.original.translations[0]?.title ?? t("posts.table.untitled", "Untitled") })
+        cell: ({ row }) => /* @__PURE__ */ jsx("div", { className: "font-medium", children: resolveTranslation(row.original.translations, defaultLang)?.title ?? t("posts.table.untitled", "Untitled") })
       },
       {
         accessorKey: "slug",
@@ -1913,7 +1932,7 @@ var PostListView = ({ navigate }) => {
         enableSorting: false
       }
     ],
-    [navigate, handleDelete, t]
+    [navigate, handleDelete, defaultLang, t]
   );
   if (loading) return /* @__PURE__ */ jsx(LoadingState, {});
   return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
@@ -2286,7 +2305,7 @@ var PostFormView = ({ postId, navigate }) => {
               ...form.register("categoryId"),
               children: [
                 /* @__PURE__ */ jsx("option", { value: "", children: t("posts.form.categoryNone", "No category") }),
-                categories.map((category) => /* @__PURE__ */ jsx("option", { value: category.id, children: category.translations[0]?.name ?? category.slug }, category.id))
+                categories.map((category) => /* @__PURE__ */ jsx("option", { value: category.id, children: resolveTranslation(category.translations, defaultLanguageCode)?.name ?? category.slug }, category.id))
               ]
             }
           )
@@ -2431,7 +2450,7 @@ var CategoryFormView = ({
       const base = { ...prev };
       languages.forEach((language) => {
         if (!base[language.code]) {
-          base[language.code] = { name: "" };
+          base[language.code] = { name: "", description: "" };
         }
       });
       return base;
@@ -2448,7 +2467,8 @@ var CategoryFormView = ({
         const map = category.translations.reduce(
           (acc, translation) => {
             acc[translation.language] = {
-              name: translation.name
+              name: translation.name,
+              description: translation.description ?? ""
             };
             return acc;
           },
@@ -2510,20 +2530,29 @@ var CategoryFormView = ({
     }
     setAutoTranslating(true);
     try {
+      const sourceDescription = translations[defaultLanguageCode]?.description?.trim();
+      const fields = { name: sourceName };
+      if (sourceDescription) {
+        fields.description = sourceDescription;
+      }
       const response = await requestTranslation({
         sourceLanguage: defaultLanguageCode,
         targetLanguages,
-        fields: { name: sourceName }
+        fields
       });
       setTranslations((prev) => {
         const updated = { ...prev };
         Object.entries(response.translations).forEach(([languageCode, value]) => {
           if (languageCode === defaultLanguageCode) return;
           const translatedName = value.name;
+          const translatedDescription = value.description;
           if (typeof translatedName === "string" && translatedName.trim()) {
-            updated[languageCode] = { name: translatedName };
+            updated[languageCode] = {
+              name: translatedName,
+              description: typeof translatedDescription === "string" ? translatedDescription : prev[languageCode]?.description ?? ""
+            };
           } else if (!updated[languageCode]) {
-            updated[languageCode] = { name: "" };
+            updated[languageCode] = { name: "", description: "" };
           }
         });
         return updated;
@@ -2561,7 +2590,7 @@ var CategoryFormView = ({
         translations: Object.entries(translations).filter(([, value]) => value.name.trim()).map(([language, value]) => ({
           language,
           name: value.name,
-          description: null
+          description: value.description?.trim() || void 0
         }))
       };
       if (!payload.translations?.length) {
@@ -2631,27 +2660,53 @@ var CategoryFormView = ({
       ] }),
       /* @__PURE__ */ jsxs(Tabs, { value: activeLanguage, onValueChange: setActiveLanguage, children: [
         /* @__PURE__ */ jsx(TabsList, { children: languages.map((language) => /* @__PURE__ */ jsx(TabsTrigger, { value: language.code, children: language.code.toUpperCase() }, language.code)) }),
-        languages.map((language) => /* @__PURE__ */ jsx(TabsContent, { value: language.code, className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
-          /* @__PURE__ */ jsxs(Label2, { htmlFor: `category-name-${language.code}`, children: [
-            t("categories.form.nameLabel", "Name"),
-            " (",
-            language.code.toUpperCase(),
-            ")"
+        languages.map((language) => /* @__PURE__ */ jsxs(TabsContent, { value: language.code, className: "space-y-4", children: [
+          /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+            /* @__PURE__ */ jsxs(Label2, { htmlFor: `category-name-${language.code}`, children: [
+              t("categories.form.nameLabel", "Name"),
+              " (",
+              language.code.toUpperCase(),
+              ")"
+            ] }),
+            /* @__PURE__ */ jsx(
+              Input,
+              {
+                id: `category-name-${language.code}`,
+                value: translations[language.code]?.name ?? "",
+                onChange: (event) => setTranslations((prev) => ({
+                  ...prev,
+                  [language.code]: {
+                    ...prev[language.code],
+                    name: event.target.value
+                  }
+                }))
+              }
+            )
           ] }),
-          /* @__PURE__ */ jsx(
-            Input,
-            {
-              id: `category-name-${language.code}`,
-              value: translations[language.code]?.name ?? "",
-              onChange: (event) => setTranslations((prev) => ({
-                ...prev,
-                [language.code]: {
-                  name: event.target.value
-                }
-              }))
-            }
-          )
-        ] }) }, language.code))
+          /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
+            /* @__PURE__ */ jsxs(Label2, { htmlFor: `category-description-${language.code}`, children: [
+              t("categories.form.descriptionLabel", "Description"),
+              " (",
+              language.code.toUpperCase(),
+              ")"
+            ] }),
+            /* @__PURE__ */ jsx(
+              Textarea,
+              {
+                id: `category-description-${language.code}`,
+                rows: 3,
+                value: translations[language.code]?.description ?? "",
+                onChange: (event) => setTranslations((prev) => ({
+                  ...prev,
+                  [language.code]: {
+                    ...prev[language.code],
+                    description: event.target.value
+                  }
+                }))
+              }
+            )
+          ] })
+        ] }, language.code))
       ] })
     ] }),
     /* @__PURE__ */ jsxs(CardFooter, { className: "flex justify-end gap-2", children: [
@@ -2661,7 +2716,11 @@ var CategoryFormView = ({
   ] }) });
 };
 var CategoryListView = ({ navigate }) => {
+  const {
+    state: { languages }
+  } = useContext(AdminContext);
   const t = useTranslate();
+  const defaultLang = useMemo(() => resolveDefaultLanguageCode(languages), [languages]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const loadCategories = useCallback(async () => {
@@ -2723,7 +2782,7 @@ var CategoryListView = ({ navigate }) => {
   if (loading) return /* @__PURE__ */ jsx(LoadingState, {});
   const tableData = categories.map((category) => ({
     ...category,
-    defaultName: category.translations[0]?.name ?? "\u2014"
+    defaultName: resolveTranslation(category.translations, defaultLang)?.name ?? "\u2014"
   }));
   return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [

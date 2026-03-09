@@ -1141,14 +1141,14 @@ var postTranslationSchema = zod.z.object({
   language: languageCodeSchema,
   title: zod.z.string().min(1),
   content: zod.z.string().min(1),
-  excerpt: zod.z.string().optional(),
-  metaTitle: zod.z.string().optional(),
-  metaDescription: zod.z.string().optional()
+  excerpt: zod.z.string().nullable().optional(),
+  metaTitle: zod.z.string().nullable().optional(),
+  metaDescription: zod.z.string().nullable().optional()
 });
 var categoryTranslationSchema = zod.z.object({
   language: languageCodeSchema,
   name: zod.z.string().min(1),
-  description: zod.z.string().optional()
+  description: zod.z.string().nullable().optional()
 });
 var loginSchema = zod.z.object({
   email: zod.z.string().email(),

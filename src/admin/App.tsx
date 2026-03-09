@@ -152,7 +152,7 @@ interface AdminCategory {
     id?: number;
     language: string;
     name: string;
-    description: string | null;
+    description?: string | null;
   }>;
 }
 
@@ -528,6 +528,22 @@ function buildPostFormSchema(t: TranslateFn) {
   });
 }
 
+function resolveDefaultLanguageCode(languages: Language[]): string | undefined {
+  const enabled = languages.filter((l) => l.enabled);
+  return (enabled.find((l) => l.isDefault) ?? enabled[0] ?? languages[0])?.code;
+}
+
+function resolveTranslation<T extends { language: string }>(
+  translations: T[],
+  defaultLang?: string
+): T | undefined {
+  if (defaultLang) {
+    const match = translations.find((t) => t.language === defaultLang);
+    if (match) return match;
+  }
+  return translations[0];
+}
+
 function generateSlug(input: string): string {
   return input
     .normalize('NFD')
@@ -627,7 +643,7 @@ const Sidebar = ({
         })}
       </nav>
       <div className="border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground">
-        next-blog-cms v0.1.2
+        next-blog-cms
       </div>
     </aside>
   );
@@ -731,7 +747,11 @@ const StatsCard = ({ title, value, icon: Icon, colorClass = 'bg-accent-blue' }: 
 );
 
 const DashboardView = ({ navigate }: { navigate: (path: string) => void }) => {
+  const {
+    state: { languages }
+  } = useContext(AdminContext);
   const t = useTranslate();
+  const defaultLang = useMemo(() => resolveDefaultLanguageCode(languages), [languages]);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<AdminPost[]>([]);
   const [categories, setCategories] = useState<AdminCategory[]>([]);
@@ -815,7 +835,7 @@ const DashboardView = ({ navigate }: { navigate: (path: string) => void }) => {
             <TableBody>
               {posts.slice(0, 5).map((post) => (
                 <TableRow key={post.id} className="cursor-pointer" onClick={() => navigate(`/posts/${post.id}`)}>
-                  <TableCell className="font-medium">{post.translations[0]?.title ?? post.slug}</TableCell>
+                  <TableCell className="font-medium">{resolveTranslation(post.translations, defaultLang)?.title ?? post.slug}</TableCell>
                   <TableCell>
                     <Badge variant={post.status === 'published' ? 'success' : 'warning'}>
                       {post.status === 'published'
@@ -860,7 +880,11 @@ type PostFormValues = {
 };
 
 const PostListView = ({ navigate }: { navigate: (path: string) => void }) => {
+  const {
+    state: { languages }
+  } = useContext(AdminContext);
   const t = useTranslate();
+  const defaultLang = useMemo(() => resolveDefaultLanguageCode(languages), [languages]);
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<AdminPost[]>([]);
@@ -905,7 +929,7 @@ const PostListView = ({ navigate }: { navigate: (path: string) => void }) => {
         header: t('posts.table.title', 'Title'),
         cell: ({ row }) => (
           <div className="font-medium">
-            {row.original.translations[0]?.title ?? t('posts.table.untitled', 'Untitled')}
+            {resolveTranslation(row.original.translations, defaultLang)?.title ?? t('posts.table.untitled', 'Untitled')}
           </div>
         )
       },
@@ -946,7 +970,7 @@ const PostListView = ({ navigate }: { navigate: (path: string) => void }) => {
         enableSorting: false
       }
     ],
-    [navigate, handleDelete, t]
+    [navigate, handleDelete, defaultLang, t]
   );
 
   if (loading) return <LoadingState />;
@@ -1357,7 +1381,7 @@ const PostFormView = ({ postId, navigate }: { postId?: number; navigate: (path: 
               <option value="">{t('posts.form.categoryNone', 'No category')}</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.translations[0]?.name ?? category.slug}
+                  {resolveTranslation(category.translations, defaultLanguageCode)?.name ?? category.slug}
                 </option>
               ))}
             </select>
@@ -1512,7 +1536,7 @@ const CategoryFormView = ({
     [enabledLanguages, languages]
   );
   const defaultLanguageCode = defaultLanguage?.code;
-  const [translations, setTranslations] = useState<Record<string, { name: string }>>({});
+  const [translations, setTranslations] = useState<Record<string, { name: string; description: string }>>({});
   const [activeLanguage, setActiveLanguage] = useState('');
   const [slug, setSlug] = useState('');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(Boolean(categoryId));
@@ -1533,7 +1557,7 @@ const CategoryFormView = ({
       const base = { ...prev };
       languages.forEach((language) => {
         if (!base[language.code]) {
-          base[language.code] = { name: '' };
+          base[language.code] = { name: '', description: '' };
         }
       });
       return base;
@@ -1548,10 +1572,11 @@ const CategoryFormView = ({
         const { category } = await fetchCategory(categoryId);
         setSlug(category.slug);
         setSlugManuallyEdited(true);
-        const map = category.translations.reduce<Record<string, { name: string }>>(
+        const map = category.translations.reduce<Record<string, { name: string; description: string }>>(
           (acc, translation) => {
             acc[translation.language] = {
-              name: translation.name
+              name: translation.name,
+              description: translation.description ?? ''
             };
             return acc;
           },
@@ -1620,10 +1645,16 @@ const CategoryFormView = ({
 
     setAutoTranslating(true);
     try {
+      const sourceDescription = translations[defaultLanguageCode]?.description?.trim();
+      const fields: Record<string, string> = { name: sourceName };
+      if (sourceDescription) {
+        fields.description = sourceDescription;
+      }
+
       const response = await requestTranslation({
         sourceLanguage: defaultLanguageCode,
         targetLanguages,
-        fields: { name: sourceName }
+        fields
       });
 
       setTranslations((prev) => {
@@ -1631,10 +1662,14 @@ const CategoryFormView = ({
         Object.entries(response.translations).forEach(([languageCode, value]) => {
           if (languageCode === defaultLanguageCode) return;
           const translatedName = value.name;
+          const translatedDescription = value.description;
           if (typeof translatedName === 'string' && translatedName.trim()) {
-            updated[languageCode] = { name: translatedName };
+            updated[languageCode] = {
+              name: translatedName,
+              description: typeof translatedDescription === 'string' ? translatedDescription : (prev[languageCode]?.description ?? '')
+            };
           } else if (!updated[languageCode]) {
-            updated[languageCode] = { name: '' };
+            updated[languageCode] = { name: '', description: '' };
           }
         });
         return updated;
@@ -1676,7 +1711,7 @@ const CategoryFormView = ({
           .map(([language, value]) => ({
             language,
             name: value.name,
-            description: null
+            description: value.description?.trim() || undefined
           }))
       };
 
@@ -1776,7 +1811,27 @@ const CategoryFormView = ({
                       setTranslations((prev) => ({
                         ...prev,
                         [language.code]: {
+                          ...prev[language.code],
                           name: event.target.value
+                        }
+                      }))
+                    }
+                  />
+                </div>
+                <div className={fieldClass}>
+                  <Label htmlFor={`category-description-${language.code}`}>
+                    {t('categories.form.descriptionLabel', 'Description')} ({language.code.toUpperCase()})
+                  </Label>
+                  <Textarea
+                    id={`category-description-${language.code}`}
+                    rows={3}
+                    value={translations[language.code]?.description ?? ''}
+                    onChange={(event) =>
+                      setTranslations((prev) => ({
+                        ...prev,
+                        [language.code]: {
+                          ...prev[language.code],
+                          description: event.target.value
                         }
                       }))
                     }
@@ -1804,7 +1859,11 @@ const CategoryFormView = ({
 };
 
 const CategoryListView = ({ navigate }: { navigate: (path: string) => void }) => {
+  const {
+    state: { languages }
+  } = useContext(AdminContext);
   const t = useTranslate();
+  const defaultLang = useMemo(() => resolveDefaultLanguageCode(languages), [languages]);
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -1878,7 +1937,7 @@ const CategoryListView = ({ navigate }: { navigate: (path: string) => void }) =>
 
   const tableData = categories.map((category) => ({
     ...category,
-    defaultName: category.translations[0]?.name ?? '—'
+    defaultName: resolveTranslation(category.translations, defaultLang)?.name ?? '—'
   }));
 
   return (

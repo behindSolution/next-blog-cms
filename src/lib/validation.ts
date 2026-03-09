@@ -17,15 +17,15 @@ export const postTranslationSchema = z.object({
   language: languageCodeSchema,
   title: z.string().min(1),
   content: z.string().min(1),
-  excerpt: z.string().optional(),
-  metaTitle: z.string().optional(),
-  metaDescription: z.string().optional()
+  excerpt: z.string().nullable().optional(),
+  metaTitle: z.string().nullable().optional(),
+  metaDescription: z.string().nullable().optional()
 });
 
 export const categoryTranslationSchema = z.object({
   language: languageCodeSchema,
   name: z.string().min(1),
-  description: z.string().optional()
+  description: z.string().nullable().optional()
 });
 
 export const loginSchema = z.object({
