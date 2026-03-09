@@ -369,18 +369,24 @@ function synchronizeLanguages(db5) {
     return;
   }
   const existingLanguages = db5.prepare("SELECT code, enabled, is_default FROM languages").all();
-  db5.prepare("UPDATE languages SET is_default = 0").run();
+  const hasDefault = existingLanguages.some((l) => l.is_default === 1);
   const upsert = db5.prepare(
     `INSERT INTO languages (code, name, is_default, enabled)
      VALUES (@code, @name, @is_default, @enabled)
      ON CONFLICT(code) DO UPDATE SET
        name = COALESCE(excluded.name, languages.name),
-       is_default = excluded.is_default,
+       is_default = CASE
+         WHEN @apply_default = 1 THEN excluded.is_default
+         ELSE languages.is_default
+       END,
        enabled = CASE
          WHEN languages.enabled = 1 THEN 1
          ELSE excluded.enabled
        END`
   );
+  if (!hasDefault) {
+    db5.prepare("UPDATE languages SET is_default = 0").run();
+  }
   for (const code of configuredLanguages) {
     const normalizedCode = code.trim();
     if (!normalizedCode) {
@@ -392,8 +398,9 @@ function synchronizeLanguages(db5) {
     upsert.run({
       code: normalizedCode,
       name: resolveLanguageName(normalizedCode),
-      is_default: isDefault ? 1 : 0,
-      enabled: isEnabled ? 1 : 0
+      is_default: !hasDefault && isDefault ? 1 : 0,
+      enabled: isEnabled ? 1 : 0,
+      apply_default: hasDefault ? 0 : 1
     });
   }
 }

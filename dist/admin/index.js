@@ -1,3 +1,4 @@
+'use client';
 import { ChevronRight, Check, Circle, X, LogOut, LayoutDashboard, FileText, FolderTree, UsersRound, Languages, Sun, Moon, Plus, Wand2, RefreshCw, Filter, Loader2, Bold, Italic, Strikethrough, Heading2, List, ListOrdered, Quote, Code, Link as Link$1, Undo2, Redo2, BookOpen } from 'lucide-react';
 import * as React from 'react';
 import { createContext, useMemo, useEffect, useState, useCallback, useContext } from 'react';
@@ -1699,7 +1700,7 @@ var Sidebar = ({
     }) }),
     /* @__PURE__ */ jsxs("div", { className: "border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground", children: [
       "v",
-      "1.2.1"
+      "1.2.3"
     ] })
   ] });
 };

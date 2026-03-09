@@ -94,20 +94,28 @@ function synchronizeLanguages(db: Database) {
     .prepare('SELECT code, enabled, is_default FROM languages')
     .all() as Array<{ code: string; enabled: number; is_default: number }>;
 
-  // Only reset is_default flag to apply the new default from config
-  db.prepare('UPDATE languages SET is_default = 0').run();
+  // Only apply config default if no language is currently set as default
+  // (first run or corrupted state). Otherwise respect the admin's choice.
+  const hasDefault = existingLanguages.some((l) => l.is_default === 1);
 
   const upsert = db.prepare(
     `INSERT INTO languages (code, name, is_default, enabled)
      VALUES (@code, @name, @is_default, @enabled)
      ON CONFLICT(code) DO UPDATE SET
        name = COALESCE(excluded.name, languages.name),
-       is_default = excluded.is_default,
+       is_default = CASE
+         WHEN @apply_default = 1 THEN excluded.is_default
+         ELSE languages.is_default
+       END,
        enabled = CASE
          WHEN languages.enabled = 1 THEN 1
          ELSE excluded.enabled
        END`
   );
+
+  if (!hasDefault) {
+    db.prepare('UPDATE languages SET is_default = 0').run();
+  }
 
   for (const code of configuredLanguages) {
     const normalizedCode = code.trim();
@@ -124,8 +132,9 @@ function synchronizeLanguages(db: Database) {
     upsert.run({
       code: normalizedCode,
       name: resolveLanguageName(normalizedCode),
-      is_default: isDefault ? 1 : 0,
-      enabled: isEnabled ? 1 : 0
+      is_default: (!hasDefault && isDefault) ? 1 : 0,
+      enabled: isEnabled ? 1 : 0,
+      apply_default: hasDefault ? 0 : 1
     });
   }
 }

@@ -1,3 +1,4 @@
+'use client';
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -1732,7 +1733,7 @@ var Sidebar = ({
     }) }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground", children: [
       "v",
-      "1.2.1"
+      "1.2.3"
     ] })
   ] });
 };
