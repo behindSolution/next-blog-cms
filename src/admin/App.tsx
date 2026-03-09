@@ -12,6 +12,7 @@ import {
   Wand2,
   BookOpen,
   Filter,
+  RefreshCw,
   type LucideIcon
 } from 'lucide-react';
 import {
@@ -1351,15 +1352,36 @@ const PostFormView = ({ postId, navigate }: { postId?: number; navigate: (path: 
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div className={fieldClass}>
             <Label htmlFor="post-slug">{t('posts.form.slugLabel', 'Slug *')}</Label>
-            <Input
-              id="post-slug"
-              {...slugField}
-              onChange={(event) => {
-                slugField.onChange(event);
-                const next = event.target.value;
-                setSlugManuallyEdited(Boolean(next.trim()));
-              }}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="post-slug"
+                className="flex-1"
+                {...slugField}
+                onChange={(event) => {
+                  slugField.onChange(event);
+                  const next = event.target.value;
+                  setSlugManuallyEdited(Boolean(next.trim()));
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                title={t('posts.form.generateSlug', 'Generate slug from title')}
+                onClick={() => {
+                  const lang = activeLanguage || defaultLanguageCode;
+                  const title = lang ? translations?.[lang]?.title : undefined;
+                  if (title?.trim()) {
+                    const generated = generateSlug(title);
+                    form.setValue('slug', generated, { shouldDirty: true });
+                    setSlugManuallyEdited(true);
+                  }
+                }}
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className={fieldClass}>
             <Label htmlFor="post-status">{t('posts.form.statusLabel', 'Status')}</Label>
@@ -1780,15 +1802,35 @@ const CategoryFormView = ({
         <CardContent className="space-y-4">
           <div className={fieldClass}>
             <Label htmlFor="category-slug">Slug *</Label>
-            <Input
-              id="category-slug"
-              value={slug}
-              onChange={(event) => {
-                const next = event.target.value;
-                setSlug(next);
-                setSlugManuallyEdited(Boolean(next.trim()));
-              }}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="category-slug"
+                className="flex-1"
+                value={slug}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  setSlug(next);
+                  setSlugManuallyEdited(Boolean(next.trim()));
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                title={t('categories.form.generateSlug', 'Generate slug from name')}
+                onClick={() => {
+                  const lang = activeLanguage || defaultLanguageCode;
+                  const name = lang ? translations[lang]?.name : undefined;
+                  if (name?.trim()) {
+                    setSlug(generateSlug(name));
+                    setSlugManuallyEdited(true);
+                  }
+                }}
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           <Tabs value={activeLanguage} onValueChange={setActiveLanguage}>

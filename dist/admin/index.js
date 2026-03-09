@@ -1,5 +1,4 @@
-'use client';
-import { ChevronRight, Check, Circle, X, LogOut, LayoutDashboard, FileText, FolderTree, UsersRound, Languages, Sun, Moon, Plus, Wand2, Filter, Loader2, Bold, Italic, Strikethrough, Heading2, List, ListOrdered, Quote, Code, Link as Link$1, Undo2, Redo2, BookOpen } from 'lucide-react';
+import { ChevronRight, Check, Circle, X, LogOut, LayoutDashboard, FileText, FolderTree, UsersRound, Languages, Sun, Moon, Plus, Wand2, RefreshCw, Filter, Loader2, Bold, Italic, Strikethrough, Heading2, List, ListOrdered, Quote, Code, Link as Link$1, Undo2, Redo2, BookOpen } from 'lucide-react';
 import * as React from 'react';
 import { createContext, useMemo, useEffect, useState, useCallback, useContext } from 'react';
 import { useForm, useController } from 'react-hook-form';
@@ -2269,18 +2268,41 @@ var PostFormView = ({ postId, navigate }) => {
       /* @__PURE__ */ jsxs(CardContent, { className: "grid gap-4 md:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
           /* @__PURE__ */ jsx(Label2, { htmlFor: "post-slug", children: t("posts.form.slugLabel", "Slug *") }),
-          /* @__PURE__ */ jsx(
-            Input,
-            {
-              id: "post-slug",
-              ...slugField,
-              onChange: (event) => {
-                slugField.onChange(event);
-                const next = event.target.value;
-                setSlugManuallyEdited(Boolean(next.trim()));
+          /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsx(
+              Input,
+              {
+                id: "post-slug",
+                className: "flex-1",
+                ...slugField,
+                onChange: (event) => {
+                  slugField.onChange(event);
+                  const next = event.target.value;
+                  setSlugManuallyEdited(Boolean(next.trim()));
+                }
               }
-            }
-          )
+            ),
+            /* @__PURE__ */ jsx(
+              Button,
+              {
+                type: "button",
+                variant: "outline",
+                size: "icon",
+                className: "shrink-0",
+                title: t("posts.form.generateSlug", "Generate slug from title"),
+                onClick: () => {
+                  const lang = activeLanguage || defaultLanguageCode;
+                  const title = lang ? translations?.[lang]?.title : void 0;
+                  if (title?.trim()) {
+                    const generated = generateSlug(title);
+                    form.setValue("slug", generated, { shouldDirty: true });
+                    setSlugManuallyEdited(true);
+                  }
+                },
+                children: /* @__PURE__ */ jsx(RefreshCw, { className: "h-4 w-4" })
+              }
+            )
+          ] })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
           /* @__PURE__ */ jsx(Label2, { htmlFor: "post-status", children: t("posts.form.statusLabel", "Status") }),
@@ -2647,18 +2669,40 @@ var CategoryFormView = ({
     /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
       /* @__PURE__ */ jsxs("div", { className: fieldClass, children: [
         /* @__PURE__ */ jsx(Label2, { htmlFor: "category-slug", children: "Slug *" }),
-        /* @__PURE__ */ jsx(
-          Input,
-          {
-            id: "category-slug",
-            value: slug,
-            onChange: (event) => {
-              const next = event.target.value;
-              setSlug(next);
-              setSlugManuallyEdited(Boolean(next.trim()));
+        /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              id: "category-slug",
+              className: "flex-1",
+              value: slug,
+              onChange: (event) => {
+                const next = event.target.value;
+                setSlug(next);
+                setSlugManuallyEdited(Boolean(next.trim()));
+              }
             }
-          }
-        )
+          ),
+          /* @__PURE__ */ jsx(
+            Button,
+            {
+              type: "button",
+              variant: "outline",
+              size: "icon",
+              className: "shrink-0",
+              title: t("categories.form.generateSlug", "Generate slug from name"),
+              onClick: () => {
+                const lang = activeLanguage || defaultLanguageCode;
+                const name = lang ? translations[lang]?.name : void 0;
+                if (name?.trim()) {
+                  setSlug(generateSlug(name));
+                  setSlugManuallyEdited(true);
+                }
+              },
+              children: /* @__PURE__ */ jsx(RefreshCw, { className: "h-4 w-4" })
+            }
+          )
+        ] })
       ] }),
       /* @__PURE__ */ jsxs(Tabs, { value: activeLanguage, onValueChange: setActiveLanguage, children: [
         /* @__PURE__ */ jsx(TabsList, { children: languages.map((language) => /* @__PURE__ */ jsx(TabsTrigger, { value: language.code, children: language.code.toUpperCase() }, language.code)) }),
