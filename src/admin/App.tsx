@@ -643,7 +643,7 @@ const Sidebar = ({
         })}
       </nav>
       <div className="border-t border-sidebar-border bg-muted/30 px-6 py-3 text-xs text-muted-foreground">
-        next-blog-cms
+        v{process.env.NEXT_BLOG_CMS_VERSION}
       </div>
     </aside>
   );
@@ -1120,43 +1120,44 @@ const PostFormView = ({ postId, navigate }: { postId?: number; navigate: (path: 
   useEffect(() => {
     (async () => {
       try {
-        const categoriesResponse = await fetchCategories();
+        if (postId) setLoading(true);
+        const [categoriesResponse, postResponse] = await Promise.all([
+          fetchCategories(),
+          postId ? fetchSinglePost(postId) : null
+        ]);
         setCategories(categoriesResponse.categories);
-      } catch {
-        notify(t('categories.loadError', 'Unable to load categories'), 'destructive');
-      }
-    })();
-  }, [t]);
 
-  useEffect(() => {
-    if (!postId) return;
-    (async () => {
-      try {
-        setLoading(true);
-        const { post } = await fetchSinglePost(postId);
-        form.reset({
-          slug: post.slug,
-          status: post.status,
-          categoryId: post.categoryId ? String(post.categoryId) : '',
-          featuredImage: post.featuredImage ?? '',
-          publishedAt: post.publishedAt ?? '',
-          translations: post.translations.reduce<PostFormValues['translations']>((acc, translation) => {
-            acc[translation.language] = {
-              title: translation.title,
-              content: translation.content,
-              excerpt: translation.excerpt ?? '',
-              metaTitle: translation.metaTitle ?? '',
-              metaDescription: translation.metaDescription ?? ''
-            };
-            return acc;
-          }, {})
-        });
-        setSlugManuallyEdited(true);
-        if (post.translations.length > 0) {
-          setActiveLanguage(post.translations[0].language);
+        if (postResponse) {
+          const { post } = postResponse;
+          form.reset({
+            slug: post.slug,
+            status: post.status,
+            categoryId: post.categoryId ? String(post.categoryId) : '',
+            featuredImage: post.featuredImage ?? '',
+            publishedAt: post.publishedAt ?? '',
+            translations: post.translations.reduce<PostFormValues['translations']>((acc, translation) => {
+              acc[translation.language] = {
+                title: translation.title,
+                content: translation.content,
+                excerpt: translation.excerpt ?? '',
+                metaTitle: translation.metaTitle ?? '',
+                metaDescription: translation.metaDescription ?? ''
+              };
+              return acc;
+            }, {})
+          });
+          setSlugManuallyEdited(true);
+          if (post.translations.length > 0) {
+            setActiveLanguage(post.translations[0].language);
+          }
         }
       } catch {
-        notify(t('posts.loadSingleError', 'Unable to load the post'), 'destructive');
+        notify(
+          postId
+            ? t('posts.loadSingleError', 'Unable to load the post')
+            : t('categories.loadError', 'Unable to load categories'),
+          'destructive'
+        );
       } finally {
         setLoading(false);
       }

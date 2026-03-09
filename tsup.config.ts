@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsup';
+import pkg from './package.json';
 
 export default defineConfig({
   entry: {
@@ -19,6 +20,9 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   injectStyle: true,
   target: 'es2021',
+  define: {
+    'process.env.NEXT_BLOG_CMS_VERSION': JSON.stringify(pkg.version)
+  },
   external: [
     'react',
     'react-dom',
